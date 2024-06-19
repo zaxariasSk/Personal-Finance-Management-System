@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/client/personal_finance_project" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/food-order-project" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/react-exercise" vcs="Git" />
+  </component>
+</project>
