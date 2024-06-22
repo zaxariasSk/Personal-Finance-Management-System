@@ -4,7 +4,11 @@ const app = express();
 
 const sequelize = require('./config/database');
 
+const loginRoutes = require('./routes/loginRoutes');
+
 app.use(express.json());
+
+app.use(loginRoutes);
 
 app.listen(process.env.PORT || 3000, async () => {
     try {
