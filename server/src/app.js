@@ -32,6 +32,7 @@ app.use(loginRoutes);
 app.listen(process.env.PORT || 3000, async () => {
     try {
         await sequelize.authenticate();
+        await sequelize.sync();
         console.log('Connection has been established successfully.');
     }
     catch (error) {
