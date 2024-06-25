@@ -1,7 +1,9 @@
+const {} = require('../errors/index');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
 const jwt = require('jsonwebtoken');
 const User = require('../model/userModel');
+
 
 exports.login = async (req, res) => {
     const userData = req.body;

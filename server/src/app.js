@@ -1,10 +1,10 @@
-require('dotenv')
-    .config();
+require('dotenv').config({path: __dirname + '\\.env'});
 const cookieParser = require('cookie-parser');
 const express = require('express');
 const app = express();
 
 const sequelize = require('./config/database');
+const errorHandlerMiddleware = require('./middleware/error-handler');
 
 const loginRoutes = require('./routes/loginRoutes');
 
@@ -29,13 +29,14 @@ app.use(function (req, res, next) {
 
 app.use(loginRoutes);
 
+app.use(errorHandlerMiddleware);
+console.log(__dirname + '\\.env');
 app.listen(process.env.PORT || 3000, async () => {
     try {
         await sequelize.authenticate();
         await sequelize.sync();
         console.log('Connection has been established successfully.');
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Unable to connect to the database:', error);
     }
 
