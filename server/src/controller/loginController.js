@@ -38,14 +38,11 @@ exports.register = async (req, res) => {
 
         const hashedPassword = bcrypt.hashSync(user.password, saltRounds)
 
-        console.log(hashedPassword);
-
         const newUser = await User.create({
             userName: user.username,
             email: user.email,
             password: hashedPassword
         });
-        console.log(newUser);
 
         if (!newUser) {
             return res.status(500)
