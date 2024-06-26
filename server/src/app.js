@@ -30,7 +30,7 @@ app.use(function (req, res, next) {
 app.use(loginRoutes);
 
 app.use(errorHandlerMiddleware);
-console.log(__dirname + '\\.env');
+
 app.listen(process.env.PORT || 3000, async () => {
     try {
         await sequelize.authenticate();
