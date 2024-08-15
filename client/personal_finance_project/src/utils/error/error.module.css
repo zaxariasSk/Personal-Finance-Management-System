@@ -1,0 +1,9 @@
+.error {
+    background-color: red;
+}
+
+.error_message {
+    color: white;
+    font-size: var(--error-fs);
+    line-height: 1.2;
+}

@@ -6,6 +6,7 @@ const app = express();
 const sequelize = require('./config/database');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 
+require('./config/relationships');
 const loginRoutes = require('./routes/loginRoutes');
 
 app.use(cookieParser());
@@ -23,17 +24,18 @@ app.use(function (req, res, next) {
 
     // Set to true if you need the website to include cookies in the requests sent
     // to the API (e.g. in case you use sessions)
-    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader('Access-Control-Allow-Credentials', "true");
     next();
 });
 
-app.use(loginRoutes);
+app.use('/auth', loginRoutes);
 
 app.use(errorHandlerMiddleware);
 
 app.listen(process.env.PORT || 3000, async () => {
     try {
         await sequelize.authenticate();
+        // await sequelize.sync({force: true});
         await sequelize.sync();
         console.log('Connection has been established successfully.');
     } catch (error) {

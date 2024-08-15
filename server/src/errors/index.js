@@ -4,6 +4,7 @@ const NotFoundError = require('./NotFoundError');
 const CustomAPIError = require('./CustomAPIError');
 const ConflictError = require('./ConflictError');
 const InternalServerError = require('./InternalServerError');
+const ForbiddenError = require('./ForbiddenError');
 
 module.exports = {
     BadRequestError,
@@ -11,5 +12,6 @@ module.exports = {
     NotFoundError,
     CustomAPIError,
     ConflictError,
-    InternalServerError
+    InternalServerError,
+    ForbiddenError
 }

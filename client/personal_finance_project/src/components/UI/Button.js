@@ -4,7 +4,7 @@ const Button = ({children, ...props}) => {
 
     return (
         <button
-            className={`${styles.button_wrapper}  ${(props.className || '')}`}
+            className={`${styles.button_wrapper} ${(props.className || '')}`}
             type={props.type || 'button'} {...props}>{children}</button>
     );
 }

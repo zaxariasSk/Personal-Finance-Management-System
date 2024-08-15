@@ -1,9 +1,10 @@
 const router = require('express').Router();
-const loginController = require('../controllers/loginController');
+const {googleOAuthHandler, verifyToken, logout} = require("../controllers/auth/authController");
 
-router.post('/login', loginController.login);
+router.get('/google/callback', googleOAuthHandler);
 
-router.post('/register', loginController.register);
+router.get('/verifyToken', verifyToken);
 
+router.post('/logout', logout);
 
 module.exports = router;

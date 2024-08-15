@@ -1,5 +1,5 @@
 const RootElement = () => {
-    <div>You are logged in</div>
+    return <div>You are logged in</div>
 }
 
 
