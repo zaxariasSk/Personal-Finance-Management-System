@@ -158,7 +158,6 @@ exports.verifyToken = asyncHandler(async (req, res, next) => {
 });
 
 exports.logout = asyncHandler( async (req, res, next) => {
-    return res.status(500).json({message: "Logout false"});
     const {refreshToken} = req.cookies;
 
     const {valid, expired, decoded} = verifyJwt(refreshToken);
@@ -170,5 +169,5 @@ exports.logout = asyncHandler( async (req, res, next) => {
 
     res.clearCookie('refreshToken', {path: '/', sameSite: "lax", secure: "false"});
     res.clearCookie('accessToken', {path: '/', sameSite: "lax", secure: "false"});
-    res.status(200).json({message: "Logout successfully"});
+    res.status(200).json({message: "Logged out successfully"});
 });
