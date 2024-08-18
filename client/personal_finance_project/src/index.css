@@ -39,3 +39,7 @@ code {
 body {
   background-color: rgba(0, 0, 0, 0.22);
 }
+
+main {
+  padding-left: 4rem;
+}

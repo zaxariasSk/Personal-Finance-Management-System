@@ -9,7 +9,7 @@
     flex-direction: column;
     text-align: center;
     height: 100vh;
-    width: 60px;
+    width: 4rem;
 }
 
 .navigation-container ul li {
@@ -22,6 +22,7 @@
 
 .profile {
     margin-top: auto;
+    margin-bottom: 4rem;
     position: relative;
 }
 
@@ -32,12 +33,12 @@
 .profile button {
     display: none;
     position: absolute;
-    top: 0;
+    top: -100%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
 }
-.pressed {
-    display: none !important;
+.pressed + button{
+    display: block;
 }
 .profile img {
     border-radius: 50%;

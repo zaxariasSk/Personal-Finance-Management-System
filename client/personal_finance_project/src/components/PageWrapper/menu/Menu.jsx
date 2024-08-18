@@ -17,8 +17,8 @@ const Menu = () => {
                         <img
                             src={'/images/homepage.svg'}
                             alt="homepage"
-                            width="24"
-                            height="24"
+                            width="30"
+                            height="30"
                         />
                     </NavLink>
                 </li>
@@ -27,10 +27,10 @@ const Menu = () => {
                         to={'/'}
                         end={true}>
                         <img
-                            src={'/images/homepage.svg'}
+                            src={'/images/income.png'}
                             alt="homepage"
-                            width="24"
-                            height="24"
+                            width="30"
+                            height="30"
                         />
                     </NavLink>
                 </li>

@@ -4,6 +4,7 @@ import {authActions} from "../../../redux/slices/authSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {useRef} from "react";
+import styles from "./menu.module.css";
 
 const ProfileComponent = () => {
     const profileImg = useRef();
@@ -33,7 +34,7 @@ const ProfileComponent = () => {
     }
 
     const displayButton = () => {
-        profileImg.current.classList.toggle('pressed');
+        profileImg.current.classList.toggle(styles.pressed);
     }
 
     return (
@@ -42,8 +43,8 @@ const ProfileComponent = () => {
                 src={user.profilePicture || 'null'}
                 alt={user.name + "'s profile picture"}
                 title={user.name}
-                width="24"
-                height="24"
+                width="30"
+                height="30"
                 onClick={displayButton}
                 ref={profileImg}
                 onError={({currentTarget}) => {
