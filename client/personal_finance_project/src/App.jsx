@@ -1,7 +1,7 @@
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import {createBrowserRouter, Navigate, RouterProvider} from "react-router-dom";
 import store from './redux/store';
 import {Provider} from 'react-redux';
-import RootElement from "./components/RootElement/RootElement";
+import DashboardElement from "./components/DashboardElement/DashboardElement";
 import PrivateRoute from "./components/AuthenticationRoute/PrivateRoute";
 import AuthPage from "./components/AuthPage/AuthPage";
 
@@ -12,17 +12,16 @@ const router = createBrowserRouter([
         children: [
             {
                 index: true,
-                element: <RootElement />,
+                element: <Navigate to="/dashboard" replace={true} />,
             },
             {
                 path: '/dashboard',
-                element: <RootElement />
+                element: <DashboardElement />
             }]
     },
     {
         path: '/auth',
         element: <AuthPage />,
-        // action: authAction
     }
 
 ]);

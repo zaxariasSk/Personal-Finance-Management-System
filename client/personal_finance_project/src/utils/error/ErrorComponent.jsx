@@ -1,26 +1,39 @@
 import {createPortal} from "react-dom";
-import {useState} from "react";
 import ErrorElement from "./ErrorElement";
-import styles from "./error.module.css";
+import {useDispatch, useSelector} from "react-redux";
+import {errorActions} from "../../redux/slices/errorSlice";
+import {useEffect} from "react";
 
-const ErrorComponent = (props) => {
-    console.log(props);
-    const [showModal, setShowModal] = useState(true);
-    setInterval(() => {
-        setShowModal(false);
-    }, 4000);
+const ErrorComponent = () => {
+    const {
+        hasError,
+        message
+    } = useSelector(state => state.error);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const intervalID = setInterval(() => {
+            if(hasError) {
+                dispatch(errorActions.clearError())
+            }
+        }, 4000);
+
+        return () => clearInterval(intervalID);
+    }, [dispatch, hasError]);
 
     const closeModal = () => {
-        setShowModal(false)
+        dispatch(errorActions.clearError())
     }
 
     return (
-        <div className={styles.error}>
-            {showModal && createPortal(
-                <ErrorElement onClick={closeModal} message={props.message || "Something went wrong"} />,
+        <>
+            {hasError && createPortal(
+                <ErrorElement
+                    onClick={closeModal}
+                    message={message} />,
                 document.getElementById('error-container')
             )}
-        </div>
+        </>
     )
 }
 

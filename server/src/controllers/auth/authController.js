@@ -134,7 +134,7 @@ exports.verifyToken = asyncHandler(async (req, res, next) => {
                 sameSite: "lax",
                 secure: false
             });
-            return res.status(200).json({message: "User session updated"});
+            return res.status(200).json(user);
         } else {
             throw new UnauthenticatedError('No token provided. User session ended. You must login again');
         }
@@ -158,12 +158,15 @@ exports.verifyToken = asyncHandler(async (req, res, next) => {
 });
 
 exports.logout = asyncHandler( async (req, res, next) => {
-    const {refreshToken} = req.cookies;
+    const {refreshToken, accessToken} = req.cookies;
 
-    const {valid, expired, decoded} = verifyJwt(refreshToken);
-    if(!valid || expired) {
-        res.status(200);
+    if(!refreshToken && !accessToken) {
+        return res.status(404).redirect('http://localhost:3006/auth');
     }
+
+    const token = refreshToken || accessToken;
+
+    const {valid, expired, decoded} = verifyJwt(token);
 
     deleteSession(decoded.session);
 

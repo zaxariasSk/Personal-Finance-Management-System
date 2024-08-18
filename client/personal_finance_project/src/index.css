@@ -29,3 +29,13 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#error-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2vw;
+}
+
+body {
+  background-color: rgba(0, 0, 0, 0.22);
+}

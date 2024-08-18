@@ -1,0 +1,47 @@
+import {NavLink} from "react-router-dom";
+import ProfileComponent from "./ProfileComponent";
+import styles from './menu.module.css';
+
+const Menu = () => {
+
+    return (
+        <nav
+            className={styles['navigation-container']}
+            role="navigation"
+            aria-label="Main navigation">
+            <ul>
+                <li>
+                    <NavLink
+                        to={'/dashboard'}
+                        end={true}>
+                        <img
+                            src={'/images/homepage.svg'}
+                            alt="homepage"
+                            width="24"
+                            height="24"
+                        />
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink
+                        to={'/'}
+                        end={true}>
+                        <img
+                            src={'/images/homepage.svg'}
+                            alt="homepage"
+                            width="24"
+                            height="24"
+                        />
+                    </NavLink>
+                </li>
+                <li>
+                    <div className={styles.profile}>
+                        <ProfileComponent />
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    )
+}
+
+export default Menu;

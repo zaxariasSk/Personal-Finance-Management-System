@@ -1,0 +1,45 @@
+.navigation-container {
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+.navigation-container ul {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    height: 100vh;
+    width: 60px;
+}
+
+.navigation-container ul li {
+    list-style: none;
+}
+
+.navigation-container ul li:last-of-type {
+    margin-top: auto;
+}
+
+.profile {
+    margin-top: auto;
+    position: relative;
+}
+
+.profile img {
+    cursor: pointer;
+}
+
+.profile button {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.pressed {
+    display: none !important;
+}
+.profile img {
+    border-radius: 50%;
+}
+

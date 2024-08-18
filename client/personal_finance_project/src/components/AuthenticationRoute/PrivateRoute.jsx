@@ -2,7 +2,7 @@ import {Navigate, Outlet} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
 import {fetchUserData} from "../../redux/slices/authSlice";
-import MenuElement from "../RootElement/menu/MenuElement";
+import PageWrapper from "../PageWrapper/PageWrapper";
 
 const PrivateRoute = () => {
     const dispatch = useDispatch();
@@ -29,7 +29,7 @@ const PrivateRoute = () => {
         return <Navigate to="/auth" />;
     }
 
-    return user ? <MenuElement><Outlet /></MenuElement> : <Navigate to="/auth" />;
+    return user ? <PageWrapper><Outlet /></PageWrapper> : <Navigate to="/auth" />;
 };
 
 export default PrivateRoute;

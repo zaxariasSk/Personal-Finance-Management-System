@@ -1,5 +1,12 @@
 .error {
-    background-color: red;
+    background-color: rgba(230, 52, 52, 0.87);
+    padding: 1rem 2rem;
+}
+
+.error > span {
+    display: block;
+    text-align: right;
+    cursor: pointer;
 }
 
 .error_message {
