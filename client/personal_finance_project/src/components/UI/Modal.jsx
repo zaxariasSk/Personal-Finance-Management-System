@@ -1,23 +1,32 @@
-import { useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
+import {useEffect, useRef} from 'react';
+import {createPortal} from 'react-dom';
+import styles from "./Modal.module.css";
 
-export default function Modal({ children, onClose }) {
-    const dialog = useRef();
+export default function Modal({
+                                  openModal,
+                                  closeModal,
+                                  children
+                              }) {
+    const ref = useRef();
 
     useEffect(() => {
-        // Using useEffect to sync the Modal component with the DOM Dialog API
-        // This code will open the native <dialog> via it's built-in API whenever the <Modal> component is rendered
-        const modal = dialog.current;
-        modal.showModal();
-
-        return () => {
-            modal.close(); // needed to avoid error being thrown
-        };
-    }, []);
+        if (openModal) {
+            ref.current?.showModal();
+        } else {
+            ref.current?.close();
+        }
+    }, [openModal]);
 
     return createPortal(
-        <dialog className="modal" ref={dialog} onClose={onClose}>
+        <dialog
+            className={styles.modal}
+            ref={ref}
+            onCancel={closeModal}
+        >
             {children}
+            <button onClick={closeModal}>
+                Close
+            </button>
         </dialog>,
         document.getElementById('modal')
     );

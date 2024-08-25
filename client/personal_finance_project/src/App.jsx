@@ -5,7 +5,6 @@ import DashboardElement from "./components/DashboardElement/DashboardElement";
 import PrivateRoute from "./components/AuthenticationRoute/PrivateRoute";
 import AuthPage from "./components/AuthPage/AuthPage";
 import IncomePage from "./components/IncomePage/IncomePage";
-import AddIncomeElement from "./components/IncomePage/AddIncomeElement";
 
 const router = createBrowserRouter([
     {

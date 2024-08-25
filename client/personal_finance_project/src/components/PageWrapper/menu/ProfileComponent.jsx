@@ -23,7 +23,6 @@ const ProfileComponent = () => {
                 const error = await res.json();
                 dispatch(errorActions.setError(error));
             } else {
-                console.log('mpokijinhyvu')
                 dispatch(authActions.logout());
             }
 

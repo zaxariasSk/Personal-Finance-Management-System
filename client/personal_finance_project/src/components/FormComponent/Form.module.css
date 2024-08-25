@@ -1,0 +1,12 @@
+.form > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.form > div * {
+    font-size: var(--medium-fs);
+}
+
+.form input {
+    padding: 1.5rem .5rem;
+}

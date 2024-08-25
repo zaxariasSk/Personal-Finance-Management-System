@@ -1,21 +1,33 @@
 import CardComponent from "../UI/CardComponent";
 import Button from "../UI/Button";
 import AddIncomeElement from "./AddIncomeElement";
+import {useState} from "react";
 
 
 const IncomePage = () => {
-    let content;
+    const [addIncomePage, setAddIncomePage] = useState(false);
 
     const addIncomeHandler = () => {
-        content = <AddIncomeElement />
+        setAddIncomePage(true);
+    }
+
+    const handleClose = () => {
+        setAddIncomePage(false);
     }
 
     return (
         <>
-            {content}
+            {addIncomePage && <AddIncomeElement
+                modal={addIncomePage}
+                closeModal={handleClose}
+            />}
             <h1>Income</h1>
 
-            <Button className="plus_button" type="submit" onClick={addIncomeHandler}>
+            <Button
+                className="plus_button"
+                type="submit"
+                onClick={addIncomeHandler}
+            >
                 +
             </Button>
 
@@ -45,7 +57,6 @@ const IncomePage = () => {
         </>
     )
 }
-
 
 
 export default IncomePage;
