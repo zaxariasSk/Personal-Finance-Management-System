@@ -4,6 +4,8 @@ import {Provider} from 'react-redux';
 import DashboardElement from "./components/DashboardElement/DashboardElement";
 import PrivateRoute from "./components/AuthenticationRoute/PrivateRoute";
 import AuthPage from "./components/AuthPage/AuthPage";
+import IncomePage from "./components/IncomePage/IncomePage";
+import AddIncomeElement from "./components/IncomePage/AddIncomeElement";
 
 const router = createBrowserRouter([
     {
@@ -12,24 +14,25 @@ const router = createBrowserRouter([
         children: [
             {
                 index: true,
-                element: <Navigate to="/dashboard" replace={true} />,
+                element: <Navigate
+                    to="/dashboard"
+                    replace={true} />,
             },
             {
-                path: '/dashboard',
+                path: "/dashboard",
                 element: <DashboardElement />
             },
             {
-                path: '/income',
-                // element: <IncomeElement />
+                path: "/income",
+                element: <IncomePage />
             }]
     },
     {
-        path: '/auth',
+        path: "/auth",
         element: <AuthPage />,
     }
 
 ]);
-
 
 
 function App() {

@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize');
+const {DataTypes} = require('sequelize');
 const User = require('./userModel');
 const sequelize = require('../config/database');
 
@@ -19,6 +19,10 @@ const Income = sequelize.define('Income', {
     amount: {
         type: DataTypes.FLOAT,
         allowNull: false,
+    },
+    description: {
+        type: DataTypes.STRING,
+        allowNull: true,
     },
     source: {
         type: DataTypes.STRING,

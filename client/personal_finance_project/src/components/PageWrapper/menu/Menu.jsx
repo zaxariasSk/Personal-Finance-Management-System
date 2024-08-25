@@ -24,7 +24,7 @@ const Menu = () => {
                 </li>
                 <li>
                     <NavLink
-                        to={'/'}
+                        to={'/income'}
                         end={true}>
                         <img
                             src={'/images/income.png'}

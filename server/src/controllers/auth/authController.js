@@ -58,18 +58,18 @@ exports.googleOAuthHandler = asyncHandler(async (req, res) => {
     const accessToken = signJwt({
         ...user.toJSON(),
         session: session.id
-    }, {expiresIn: "1m"});
+    }, {expiresIn: "10m"});
 
     const refreshToken = signJwt(
         {
             refresh_token,
             session: session.id
         },
-        {expiresIn: '10m'} // 1 year
+        {expiresIn: '100m'} // 1 year
     );
 
     res.cookie('accessToken', accessToken, {
-        maxAge: 60000, // 1m
+        maxAge: 600000, // 10m
         httpOnly: true,
         path: '/',
         sameSite: "lax",
@@ -77,7 +77,7 @@ exports.googleOAuthHandler = asyncHandler(async (req, res) => {
     });
 
     res.cookie('refreshToken', refreshToken, {
-        maxAge: 600000, // 10m
+        maxAge: 6000000, // 100m
         httpOnly: true,
         path: '/',
         sameSite: "lax",
@@ -125,10 +125,10 @@ exports.verifyToken = asyncHandler(async (req, res, next) => {
             const accessToken = signJwt({
                 ...user.toJSON(),
                 session: sessionId
-            }, {expiresIn: "1m"});
+            }, {expiresIn: "10m"});
 
             res.cookie('accessToken', accessToken, {
-                maxAge: 60000, // 1m
+                maxAge: 600000, // 10m
                 httpOnly: true,
                 path: '/',
                 sameSite: "lax",

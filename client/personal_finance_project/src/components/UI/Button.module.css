@@ -2,3 +2,13 @@
     border-radius: 5px;
     cursor: pointer;
 }
+
+.plus_button {
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    color: white;
+    border: unset;
+    background-color: var(--green-color);
+    font-size: var(--medium-fs);
+}

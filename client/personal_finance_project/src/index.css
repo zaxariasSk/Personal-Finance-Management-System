@@ -1,5 +1,8 @@
 :root {
   --error-fs: 1.8rem;
+  --medium-fs: 2.2rem;
+  --primary-color: #2f2cd8;
+  --green-color: #04c700;
 }
 
 *,
@@ -37,7 +40,7 @@ code {
 }
 
 body {
-  background-color: rgba(0, 0, 0, 0.22);
+  background-color: #f6f9fc;
 }
 
 main {
