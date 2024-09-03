@@ -9,4 +9,22 @@
 
 .form input {
     padding: 1.5rem .5rem;
+    border: 1px solid black;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+form input.invalid {
+    border: 2px solid red;
+    outline-color: red;
+    border-radius: 0;
+}
+
+form .errorMessage {
+    color: red;
+    font-size: 16px;
 }

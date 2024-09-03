@@ -2,7 +2,8 @@ import CardComponent from "../UI/CardComponent";
 import Button from "../UI/Button";
 import AddIncomeElement from "./AddIncomeElement";
 import {useState} from "react";
-
+import {useQuery} from "@tanstack/react-query";
+import {getIncome} from "../../api/incomeApi";
 
 const IncomePage = () => {
     const [addIncomePage, setAddIncomePage] = useState(false);
@@ -14,6 +15,14 @@ const IncomePage = () => {
     const handleClose = () => {
         setAddIncomePage(false);
     }
+
+
+    const {data} = useQuery({
+        queryKey: ["income"],
+        queryFn: getIncome
+    });
+
+    console.log(data);
 
     return (
         <>
@@ -35,7 +44,7 @@ const IncomePage = () => {
                 <h2>
                     Income history
                 </h2>
-
+                {data}
                 <div>
                     <table>
                         <thead>
@@ -60,3 +69,16 @@ const IncomePage = () => {
 
 
 export default IncomePage;
+
+export async function loader() {
+
+}
+
+export async function action({
+                                 request,
+                                 params
+                             }) {
+    const formData = await request.formData();
+    const incomeData = Object.fromEntries(formData);
+
+}

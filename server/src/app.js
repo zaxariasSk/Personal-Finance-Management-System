@@ -8,6 +8,7 @@ const errorHandlerMiddleware = require('./middleware/error-handler');
 
 require('./config/relationships');
 const loginRoutes = require('./routes/loginRoutes');
+const incomeRoutes = require('./routes/incomeRoutes');
 
 app.use(cookieParser());
 app.use(express.json());
@@ -29,6 +30,7 @@ app.use(function (req, res, next) {
 });
 
 app.use('/auth', loginRoutes);
+app.use(incomeRoutes);
 
 app.use(errorHandlerMiddleware);
 
