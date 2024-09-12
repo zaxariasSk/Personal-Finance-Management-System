@@ -34,6 +34,7 @@ const SamePageFormComponent = () => {
         validationSchema: yupSchema,
         validateOnChange: false,
         onSubmit: (values) => {
+            values.amount = parseFloat(values.amount).toFixed(2);
             fetcher.submit(values, {method: "POST"});
         }
     });

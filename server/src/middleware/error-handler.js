@@ -3,7 +3,10 @@ const CustomAPIError = require('../errors/CustomAPIError');
 
 const errorHandlerMiddleware = (err, req, res, next) => {
     if (err instanceof CustomAPIError) {
-        return res.status(err.statusCode).json({message: err.message || 'Oops something went wrong'});
+        return res.status(err.statusCode).json({
+            message: err.message || 'Oops something went wrong',
+            statusCode: err.statusCode
+        });
     }
     // Handle other types of errors
     const error = new Error(err);
