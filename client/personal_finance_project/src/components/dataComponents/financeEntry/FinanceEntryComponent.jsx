@@ -2,6 +2,10 @@ import FinanceElement from "./FinanceElement";
 
 const FinanceEntryComponent = ({data}) => {
 
+    if (!data || data.length === 0) {
+        return <p>No available income data</p>;
+    }
+
     return (
         <table>
             <thead>
@@ -13,13 +17,21 @@ const FinanceEntryComponent = ({data}) => {
             </tr>
             </thead>
             <tbody>
-            {data || "no available income data"}
-            {data && data.map((entry) => <FinanceElement
-                key={entry.id}
-                entry={entry} />)}
+            {data.map((entry) => {
+                return (
+                    <FinanceElement
+                        key={entry.id}
+                        id={entry.id}
+                        source={entry.source}
+                        amount={entry.amount}
+                        date={entry.date}
+                        description={entry.description}
+                    />
+                );
+            })}
             </tbody>
         </table>
-    )
+    );
 }
 
 export default FinanceEntryComponent;

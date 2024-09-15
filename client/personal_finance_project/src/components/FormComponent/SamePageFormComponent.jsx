@@ -63,10 +63,11 @@ const SamePageFormComponent = (props) => {
                     name="source"
                     id="source"
                     value={formik.values.source}
-                    onChange={formik.handleChange}
+                    onChange={(e) => {
+                        formik.setFieldValue('source', e.target.value, true);
+                    }}
                     onBlur={formik.handleBlur}
-                    className={formik.touched.source && formik.errors.source ? styles.invalid : ''}
-                >
+                    className={formik.touched.source && formik.errors.source ? styles.invalid : ''}>
                     <option value="">Select a source</option>
                     {incomeSources.map((sourceValue) => (
                         <option

@@ -18,7 +18,7 @@ const PrivateRoute = () => {
             dispatch(fetchUserData());
         }
 
-    }, [user, dispatch]);
+    }, [user, dispatch, loading]);
 
 
     if (loading || user === undefined) {

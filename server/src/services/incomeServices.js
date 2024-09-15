@@ -33,3 +33,21 @@ exports.addNewIncome = async (userId, data) => {
 
     return income;
 }
+
+exports.deleteIncomeById = async (userId, id) => {
+    const deletedRows = await Income.destroy({
+        where: {
+            id,
+            userId
+        }
+    });
+
+    // if(deletedRows < 1) {
+        return {
+            hasError: true,
+            message: "Failed to delete this income entry. Try again later"
+        }
+    // }
+
+    return deletedRows;
+}

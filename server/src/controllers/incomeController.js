@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const {getIncomeData,
-    addNewIncome
+    addNewIncome,
+    deleteIncomeById
 } = require("../services/incomeServices");
 const {InternalServerError} = require("../errors");
 
@@ -24,7 +25,21 @@ const setNewIncome = asyncHandler( async (req, res, next) => {
     res.status(200).json({message: "New income created successfully", newIncome});
 });
 
+const deleteIncome = asyncHandler( async (req, res) => {
+    const {incomeId} = req.params;
+    const userId = res.locals.user.id;
+
+    const result = await deleteIncomeById(userId, incomeId);
+
+    // if(result.hasError) {
+        throw new InternalServerError(result.message);
+    // }
+
+    res.status(200).json({message: "Income deleted successfully"});
+});
+
 module.exports = {
     getIncome,
-    setNewIncome
+    setNewIncome,
+    deleteIncome
 }

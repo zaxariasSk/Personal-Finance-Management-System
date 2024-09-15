@@ -23,7 +23,8 @@ export const fetchIncome = async ({signal}) => {
 
         return await res.json(); // Return the valid data
 
-    } catch (err) {
+    }
+    catch (err) {
         return {
             hasError: true,
             error: "A network error occurred"
@@ -43,10 +44,47 @@ export const addNewIncome = async (income) => {
         });
 
         return await res.json();
-    } catch (err) {
+    }
+    catch (err) {
         return {
             hasError: true,
             error: "A network error occurred"
         };
     }
 };
+
+export const deleteIncome = async (incomeId) => {
+    console.log(incomeId);
+    try {
+        const res = await fetch(`http://localhost:3000/income/delete/${incomeId}`, {
+            method: "DELETE",
+            credentials: "include",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+
+        if (!res.ok) {
+            if (res.status === 401) {
+                return {
+                    hasError: true,
+                    error: "No token provided",
+                    statusCode: 401
+                };
+            } else {
+                const error = await res.json();
+                return {
+                    hasError: true,
+                    error: error?.message
+                };
+            }
+        }
+
+    }
+    catch (e) {
+        return {
+            hasError: true,
+            error: "A network error occurred"
+        }
+    }
+}
