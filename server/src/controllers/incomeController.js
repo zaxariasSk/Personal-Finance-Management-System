@@ -7,7 +7,7 @@ const {InternalServerError} = require("../errors");
 const getIncome = asyncHandler (async (req, res, next) => {
     const user = res.locals.user;
 
-    const data = getIncomeData(user.id);
+    const data = await getIncomeData(user.id);
 
     res.status(200).json(data);
 });

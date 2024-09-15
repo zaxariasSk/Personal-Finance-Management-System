@@ -8,12 +8,13 @@ import {errorActions} from "../../redux/slices/errorSlice";
 import {useDispatch} from "react-redux";
 import {queryClient} from "../../utils/queryClient";
 import {redirect, useLoaderData, useNavigate} from "react-router-dom";
+import FinanceEntryComponent from "../dataComponents/financeEntry/FinanceEntryComponent";
 
 
 const IncomePage = () => {
     const navigate = useNavigate();
     const loaderData = useLoaderData();
-    console.log(loaderData);
+
     const dispatch = useDispatch();
     const [addIncomePage, setAddIncomePage] = useState(false);
 
@@ -31,8 +32,6 @@ const IncomePage = () => {
         staleTime: 10000
     });
 
-    console.log(data);
-
     useEffect(() => {
         if (loaderData.hasError) {
             dispatch(errorActions.setError({message: loaderData.error}));
@@ -45,7 +44,7 @@ const IncomePage = () => {
                 dispatch(errorActions.setError({message: data.error}));
             }
         }
-    }, [data, dispatch]);
+    }, [data, dispatch, loaderData.hasError, loaderData.error, navigate]);
 
 
     return (
@@ -71,21 +70,7 @@ const IncomePage = () => {
                 </h2>
                 {/*{data}*/}
                 <div>
-                    <table>
-                        <thead>
-                        <tr>
-                            <th scope="col">Source</th>
-                            <th scope="col">Amount</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Description</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-
-                        </tr>
-                        </tbody>
-                    </table>
+                    <FinanceEntryComponent data={data}/>
                 </div>
             </CardComponent>
         </>
@@ -108,14 +93,10 @@ export async function loader() {
     return data;
 }
 
-export async function action({
-                                 request,
-                                 params
-                             }) {
+export async function action({request}) {
     const formData = await request.formData();
     const incomeData = Object.fromEntries(formData);
     const res = await addNewIncome(incomeData);
-    //TODO: exw error ti kanw?
     await queryClient.invalidateQueries({queryKey: ["income"]});
     return res;
 }

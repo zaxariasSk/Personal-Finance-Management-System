@@ -11,6 +11,6 @@
 
 .error_message {
     color: white;
-    font-size: var(--error-fs);
+    font-size: var(--small-fs);
     line-height: 1.2;
 }

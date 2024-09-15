@@ -3,8 +3,10 @@ import Button from "../UI/Button";
 import styles from "./Form.module.css"
 import {useFormik} from "formik";
 import {string, date, object} from "yup";
+import useHandleErrorOrNavigate from "../../utils/error/handleErrorOrNavigate";
+import {useEffect} from "react";
 
-const SamePageFormComponent = () => {
+const SamePageFormComponent = (props) => {
     const fetcher = useFetcher();
 
     let yupSchema = object({
@@ -38,6 +40,15 @@ const SamePageFormComponent = () => {
             fetcher.submit(values, {method: "POST"});
         }
     });
+
+    useEffect(() => {
+        if (fetcher.data?.newIncome) {
+            props.closeModal();
+        }
+    }, [fetcher.data, props]);
+
+    // error handling
+    useHandleErrorOrNavigate(fetcher.data);
 
     return (
         <fetcher.Form
@@ -116,8 +127,8 @@ const SamePageFormComponent = () => {
                 ) : null}
             </div>
 
-            <Button type="submit">
-                Add new income
+            <Button type="submit" disabled={fetcher.state === "submitting"} >
+                {fetcher.state === "submitting" ? "loading" : "Add new income"}
             </Button>
         </fetcher.Form>
     )

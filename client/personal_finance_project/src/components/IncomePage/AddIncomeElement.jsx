@@ -9,7 +9,8 @@ const AddIncomeElement = ({modal, closeModal}) => {
             closeModal={() => closeModal(false)}
         >
             <CardComponent>
-                <SamePageFormComponent></SamePageFormComponent>
+                <SamePageFormComponent closeModal={() => closeModal(false)}
+                ></SamePageFormComponent>
             </CardComponent>
         </Modal>
     )

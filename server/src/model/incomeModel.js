@@ -17,7 +17,7 @@ const Income = sequelize.define('Income', {
         }
     },
     amount: {
-        type: DataTypes.DECIMAL(10,2),
+        type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
     },
     description: {
@@ -25,7 +25,17 @@ const Income = sequelize.define('Income', {
         allowNull: true,
     },
     source: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM,
+        value: [
+            "Salary",
+            "Business",
+            "Client",
+            "Gifts",
+            "Insurance",
+            "Loan",
+            "Stocks",
+            "Other"
+        ],
         allowNull: false,
     },
     date: {
