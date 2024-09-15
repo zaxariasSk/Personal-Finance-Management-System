@@ -13,7 +13,10 @@ const FinanceEntryComponent = ({data}) => {
             </tr>
             </thead>
             <tbody>
-                {data.map((entry) => <FinanceElement key={entry.id} entry={entry} />)}
+            {data || "no available income data"}
+            {data && data.map((entry) => <FinanceElement
+                key={entry.id}
+                entry={entry} />)}
             </tbody>
         </table>
     )

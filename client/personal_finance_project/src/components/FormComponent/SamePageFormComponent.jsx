@@ -2,17 +2,18 @@ import {useFetcher} from "react-router-dom";
 import Button from "../UI/Button";
 import styles from "./Form.module.css"
 import {useFormik} from "formik";
-import {string, date, object} from "yup";
+import {string, date, object, mixed} from "yup";
 import useHandleErrorOrNavigate from "../../utils/error/handleErrorOrNavigate";
 import {useEffect} from "react";
+
+const incomeSources = ["Salary", "Business", "Client", "Gifts", "Insurance", "Stocks", "Loan", "Other"];
 
 const SamePageFormComponent = (props) => {
     const fetcher = useFetcher();
 
     let yupSchema = object({
-        source: string()
-            .min(3, "Source must contain more than 3 letters")
-            .matches(/^[a-zA-Z\s]+$/, "Only alphabetic characters are allowed")
+        source: mixed()
+            .oneOf(incomeSources)
             .required("Source is required"),
         amount: string()
             .test(
@@ -58,16 +59,23 @@ const SamePageFormComponent = (props) => {
             noValidate={true}>
             <div>
                 <label htmlFor="source">Source</label>
-                <input
-                    type="text"
+                <select
                     name="source"
                     id="source"
-                    placeholder="enter your income source"
                     value={formik.values.source}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className={(formik.touched.source && formik.errors.source) ? styles.invalid : ''}
-                />
+                    className={formik.touched.source && formik.errors.source ? styles.invalid : ''}
+                >
+                    <option value="">Select a source</option>
+                    {incomeSources.map((sourceValue) => (
+                        <option
+                            key={sourceValue}
+                            value={sourceValue}>
+                            {sourceValue}
+                        </option>
+                    ))}
+                </select>
                 {formik.touched.source && formik.errors.source ? (
                     <div className={styles.errorMessage}>{formik.errors.source}</div>
                 ) : null}
@@ -127,7 +135,9 @@ const SamePageFormComponent = (props) => {
                 ) : null}
             </div>
 
-            <Button type="submit" disabled={fetcher.state === "submitting"} >
+            <Button
+                type="submit"
+                disabled={fetcher.state === "submitting"}>
                 {fetcher.state === "submitting" ? "loading" : "Add new income"}
             </Button>
         </fetcher.Form>

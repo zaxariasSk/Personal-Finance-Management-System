@@ -25,8 +25,7 @@ const Income = sequelize.define('Income', {
         allowNull: true,
     },
     source: {
-        type: DataTypes.ENUM,
-        value: [
+        type: DataTypes.ENUM(
             "Salary",
             "Business",
             "Client",
@@ -35,8 +34,8 @@ const Income = sequelize.define('Income', {
             "Loan",
             "Stocks",
             "Other"
-        ],
-        allowNull: false,
+        ),
+        allowNull: false
     },
     date: {
         type: DataTypes.DATEONLY,
