@@ -17,7 +17,7 @@ const Income = sequelize.define('Income', {
         }
     },
     amount: {
-        type: DataTypes.DECIMAL(10, 2),
+        type: DataTypes.DECIMAL(12, 2),
         allowNull: false,
     },
     description: {

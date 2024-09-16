@@ -7,6 +7,7 @@ import AuthPage from "./components/AuthPage/AuthPage";
 import IncomePage, {action as addIncomeAction, loader as incomePageLoader} from "./components/IncomePage/IncomePage";
 import {queryClient} from "./utils/queryClient";
 import {QueryClientProvider} from '@tanstack/react-query'
+import EditEntryPage from "./components/dataComponents/financeEntry/EditEntryPage";
 
 const router = createBrowserRouter([
     {
@@ -27,7 +28,11 @@ const router = createBrowserRouter([
                 path: "/income",
                 element: <IncomePage />,
                 loader: incomePageLoader,
-                action: addIncomeAction
+                action: addIncomeAction,
+                children: [{
+                    path: "edit/:id",
+                    element: <EditEntryPage/>
+                }]
             }]
     },
     {

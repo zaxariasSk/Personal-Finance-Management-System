@@ -7,9 +7,8 @@ import {addNewIncome, fetchIncome} from "../../api/incomeApi";
 import {errorActions} from "../../redux/slices/errorSlice";
 import {useDispatch} from "react-redux";
 import {queryClient} from "../../utils/queryClient";
-import {redirect, useLoaderData, useNavigate} from "react-router-dom";
+import {Outlet, redirect, useLoaderData, useNavigate} from "react-router-dom";
 import FinanceEntryComponent from "../dataComponents/financeEntry/FinanceEntryComponent";
-
 
 const IncomePage = () => {
     const navigate = useNavigate();
@@ -73,6 +72,9 @@ const IncomePage = () => {
                     <FinanceEntryComponent data={data}/>
                 </div>
             </CardComponent>
+
+            {/* Outlet for nested routes */}
+            <Outlet/>
         </>
     )
 }

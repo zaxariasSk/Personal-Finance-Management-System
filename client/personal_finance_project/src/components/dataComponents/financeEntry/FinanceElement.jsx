@@ -1,9 +1,11 @@
 import styles from "./FinanceElement.module.css";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import Button from "../../UI/Button";
 import {useMutation} from "@tanstack/react-query";
 import {deleteIncome} from "../../../api/incomeApi";
 import {queryClient} from "../../../utils/queryClient";
+import {useDispatch} from "react-redux";
+import {errorActions} from "../../../redux/slices/errorSlice";
 
 const FinanceElement = ({
                             id,
@@ -13,15 +15,20 @@ const FinanceElement = ({
                             description
                         }) => {
 
-    //TODO: Na checkarw ti sumbainei me ta errors
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const {mutate} = useMutation({
         mutationFn: (id) => deleteIncome(id),
         onSuccess: async (e) => {
-            console.log(e)
+            if (e?.statusCode === 401) {
+                navigate('/auth');
+            }
             await queryClient.invalidateQueries({queryKey: ["income"]});
         },
         onError: error => {
             console.log(error)
+            dispatch(errorActions.setError({message: error.message}));
         }
     });
 
@@ -37,7 +44,7 @@ const FinanceElement = ({
                 <td>{date.replaceAll('-', '/')}</td>
                 <td>{description || ""}</td>
                 <td>
-                    <Link to={'/edit'}>
+                    <Link to={`edit/${id}`}>
                         <img
                             src={'/images/edit.svg'}
                             alt="edit"

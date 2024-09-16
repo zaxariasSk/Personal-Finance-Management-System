@@ -31,9 +31,9 @@ const deleteIncome = asyncHandler( async (req, res) => {
 
     const result = await deleteIncomeById(userId, incomeId);
 
-    // if(result.hasError) {
+    if(result.hasError) {
         throw new InternalServerError(result.message);
-    // }
+    }
 
     res.status(200).json({message: "Income deleted successfully"});
 });

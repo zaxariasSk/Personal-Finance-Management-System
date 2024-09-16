@@ -42,12 +42,12 @@ exports.deleteIncomeById = async (userId, id) => {
         }
     });
 
-    // if(deletedRows < 1) {
+    if(deletedRows < 1) {
         return {
             hasError: true,
             message: "Failed to delete this income entry. Try again later"
         }
-    // }
+    }
 
     return deletedRows;
 }

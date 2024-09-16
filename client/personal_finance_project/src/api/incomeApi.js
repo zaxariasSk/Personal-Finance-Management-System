@@ -23,8 +23,7 @@ export const fetchIncome = async ({signal}) => {
 
         return await res.json(); // Return the valid data
 
-    }
-    catch (err) {
+    } catch (err) {
         return {
             hasError: true,
             error: "A network error occurred"
@@ -44,8 +43,7 @@ export const addNewIncome = async (income) => {
         });
 
         return await res.json();
-    }
-    catch (err) {
+    } catch (err) {
         return {
             hasError: true,
             error: "A network error occurred"
@@ -54,7 +52,6 @@ export const addNewIncome = async (income) => {
 };
 
 export const deleteIncome = async (incomeId) => {
-    console.log(incomeId);
     try {
         const res = await fetch(`http://localhost:3000/income/delete/${incomeId}`, {
             method: "DELETE",
@@ -73,18 +70,13 @@ export const deleteIncome = async (incomeId) => {
                 };
             } else {
                 const error = await res.json();
-                return {
-                    hasError: true,
-                    error: error?.message
-                };
+                throw new Error(error.message || "This entry could not be deleted. Please try again later");
             }
         }
+        console.log(res)
 
-    }
-    catch (e) {
-        return {
-            hasError: true,
-            error: "A network error occurred"
-        }
+    } catch (e) {
+        console.log(e.message)
+        throw new Error(e.message || "This entry could not be deleted. Please try again later")
     }
 }
