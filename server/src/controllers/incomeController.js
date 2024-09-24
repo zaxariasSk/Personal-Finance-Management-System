@@ -1,45 +1,113 @@
 const asyncHandler = require("express-async-handler");
-const {getIncomeData,
+const {
+    getIncomeData,
+    getIncomeDataByPage,
     addNewIncome,
-    deleteIncomeById
+    deleteIncomeById,
+    editIncomeById,
+    getIncomeById
 } = require("../services/incomeServices");
-const {InternalServerError} = require("../errors");
+const {
+    InternalServerError,
+    NotFoundError,
+} = require("../errors");
+const {StatusCodes} = require("http-status-codes");
 
-const getIncome = asyncHandler (async (req, res, next) => {
+const getAllIncome = asyncHandler(async (req, res, next) => {
     const user = res.locals.user;
 
     const data = await getIncomeData(user.id);
 
-    res.status(200).json(data);
+    res.status(StatusCodes.OK).json(data);
 });
 
-const setNewIncome = asyncHandler( async (req, res, next) => {
+const getIncomeByPage = asyncHandler(async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const userId = res.locals.user.id;
+    const limit = 5;
+
+    const data = await getIncomeDataByPage(userId, page, limit);
+
+    if (data.hasError) {
+        throw new NotFoundError(data.message);
+    }
+
+    const {
+        rows: entries,
+        count: totalItems
+    } = data;
+
+    res.status(StatusCodes.OK).json({
+        data: entries,
+        totalItems,
+        totalPages: Math.ceil(totalItems / limit),
+        currentPage: page
+    });
+});
+
+const createNewIncome = asyncHandler(async (req, res, next) => {
     const userId = res.locals.user.id;
     const data = req.body;
     const newIncome = await addNewIncome(userId, data);
 
-    if(newIncome.hasError) {
+    if (newIncome.hasError) {
         throw new InternalServerError(newIncome.message);
     }
 
-    res.status(200).json({message: "New income created successfully", newIncome});
+    res.status(StatusCodes.CREATED).json({
+        message: "New income created successfully",
+        newIncome
+    });
 });
 
-const deleteIncome = asyncHandler( async (req, res) => {
+const deleteIncome = asyncHandler(async (req, res) => {
     const {incomeId} = req.params;
     const userId = res.locals.user.id;
 
     const result = await deleteIncomeById(userId, incomeId);
 
-    if(result.hasError) {
+    if (result.hasError) {
         throw new InternalServerError(result.message);
     }
 
-    res.status(200).json({message: "Income deleted successfully"});
+    res.status(StatusCodes.OK).json({message: "Income deleted successfully"});
+});
+
+const editIncome = asyncHandler(async (req, res) => {
+    const {incomeId} = req.params;
+    const userId = res.locals.user.id
+    const data = req.body;
+
+    const editedEntry = await editIncomeById(userId, incomeId, data);
+
+    if (editedEntry.hasError) {
+        throw new NotFoundError(editedEntry.message);
+    }
+
+    res.status(StatusCodes.OK).json({
+        editedEntry,
+        message: "redirect"
+    });
+});
+
+const getIncome = asyncHandler(async (req, res) => {
+    const {incomeId} = req.params;
+    const userId = res.locals.user.id;
+
+    const income = await getIncomeById(userId, incomeId);
+
+    if (income.hasError) {
+        throw new NotFoundError(income.message);
+    }
+
+    res.status(StatusCodes.OK).json(income);
 });
 
 module.exports = {
+    getAllIncome,
+    createNewIncome,
+    deleteIncome,
+    editIncome,
     getIncome,
-    setNewIncome,
-    deleteIncome
+    getIncomeByPage
 }

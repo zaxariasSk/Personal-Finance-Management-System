@@ -1,4 +1,4 @@
-import {useFetcher} from "react-router-dom";
+import {useFetcher, useNavigate} from "react-router-dom";
 import Button from "../UI/Button";
 import styles from "./Form.module.css"
 import {useFormik} from "formik";
@@ -7,38 +7,44 @@ import useHandleErrorOrNavigate from "../../utils/error/handleErrorOrNavigate";
 import {useEffect} from "react";
 
 const incomeSources = ["Salary", "Business", "Client", "Gifts", "Insurance", "Stocks", "Loan", "Other"];
+let initialValues = {
+    source: "",
+    amount: "",
+    date: "",
+    description: ""
+}
+
+let yupSchema = object({
+    source: mixed()
+        .oneOf(incomeSources)
+        .required("Source is required"),
+    amount: string()
+        .test(
+            'is-decimal',
+            'invalid decimal',
+            (value) => value.match(/^\d+(\.\d{1,2})?$/),
+        )
+        .min(0, "Amount must be greater than zero")
+        .required("Amount is required"),
+    date: date().required("Date is required"),
+    description: string()
+});
 
 const SamePageFormComponent = (props) => {
     const fetcher = useFetcher();
 
-    let yupSchema = object({
-        source: mixed()
-            .oneOf(incomeSources)
-            .required("Source is required"),
-        amount: string()
-            .test(
-                'is-decimal',
-                'invalid decimal',
-                (value) => value.match(/^\d+(\.\d{1,2})?$/),
-            )
-            .min(0, "Amount must be greater than zero")
-            .required("Amount is required"),
-        date: date().required("Date is required"),
-        description: string()
-    });
+    // check if I already have initialValues
+    if (props.initialData && Object.keys(props.initialData).length > 0) {
+        initialValues = props.initialData;
+    }
 
     const formik = useFormik({
-        initialValues: {
-            source: "",
-            amount: "",
-            date: "",
-            description: ""
-        },
+        initialValues,
         validationSchema: yupSchema,
         validateOnChange: false,
         onSubmit: (values) => {
             values.amount = parseFloat(values.amount).toFixed(2);
-            fetcher.submit(values, {method: "POST"});
+            fetcher.submit(values, {method: props.method});
         }
     });
 
@@ -67,7 +73,7 @@ const SamePageFormComponent = (props) => {
                         formik.setFieldValue('source', e.target.value, true);
                     }}
                     onBlur={formik.handleBlur}
-                    className={formik.touched.source && formik.errors.source ? styles.invalid : ''}>
+                    className={formik.touched.source && formik.errors.source ? styles.invalid : styles.submit_select}>
                     <option value="">Select a source</option>
                     {incomeSources.map((sourceValue) => (
                         <option

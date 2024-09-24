@@ -17,7 +17,7 @@ const FinanceEntryComponent = ({data}) => {
             </tr>
             </thead>
             <tbody>
-            {data.map((entry) => {
+            {data.length > 0 && data.map((entry) => {
                 return (
                     <FinanceElement
                         key={entry.id}

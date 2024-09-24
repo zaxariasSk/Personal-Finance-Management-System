@@ -28,3 +28,7 @@ form .errorMessage {
     color: red;
     font-size: 16px;
 }
+
+.submit_select {
+    border: 1px solid;
+}

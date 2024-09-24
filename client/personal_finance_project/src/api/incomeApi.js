@@ -1,6 +1,6 @@
-export const fetchIncome = async ({signal}) => {
+export const fetchIncomeByPage = async (page, {signal}) => {
     try {
-        const res = await fetch('http://localhost:3000/income', {
+        const res = await fetch(`http://localhost:3000/income?page=${page}`, {
             credentials: "include",
             signal
         });
@@ -27,7 +27,7 @@ export const fetchIncome = async ({signal}) => {
         return {
             hasError: true,
             error: "A network error occurred"
-        }; // Handle network errors, etc.
+        };
     }
 };
 
@@ -51,7 +51,7 @@ export const addNewIncome = async (income) => {
     }
 };
 
-export const deleteIncome = async (incomeId) => {
+export const deleteIncome = async (incomeId, {signal}) => {
     try {
         const res = await fetch(`http://localhost:3000/income/delete/${incomeId}`, {
             method: "DELETE",
@@ -59,6 +59,7 @@ export const deleteIncome = async (incomeId) => {
             headers: {
                 'Content-Type': 'application/json'
             },
+            signal
         });
 
         if (!res.ok) {
@@ -73,10 +74,46 @@ export const deleteIncome = async (incomeId) => {
                 throw new Error(error.message || "This entry could not be deleted. Please try again later");
             }
         }
-        console.log(res)
-
     } catch (e) {
         console.log(e.message)
         throw new Error(e.message || "This entry could not be deleted. Please try again later")
+    }
+}
+
+export const getEntryById = async (entryId, {signal}) => {
+    const res = await fetch(`http://localhost:3000/income/edit/${entryId}`, {
+        credentials: "include",
+        signal
+    });
+
+    if (!res.ok) {
+        // Handle errors here, throw an error or return an object with the error
+        throw new Error(`Error fetching entry: ${res.status}`);
+    }
+
+    // Parse and return the JSON data
+    const data = await res.json();
+    return data;
+};
+
+
+export const editIncome = async (incomeId, data) => {
+    try {
+        const res = await fetch(`http://localhost:3000/income/edit/${incomeId}`, {
+            method: "PATCH",
+            credentials: "include",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        return await res.json();
+    } catch (e) {
+        console.log(e.message)
+        return {
+            hasError: true,
+            error: "A network error occurred"
+        };
     }
 }

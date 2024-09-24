@@ -19,7 +19,7 @@ const FinanceElement = ({
     const dispatch = useDispatch();
 
     const {mutate} = useMutation({
-        mutationFn: (id) => deleteIncome(id),
+        mutationFn: ({id, signal}) => deleteIncome(id, {signal}),
         onSuccess: async (e) => {
             if (e?.statusCode === 401) {
                 navigate('/auth');
@@ -27,14 +27,16 @@ const FinanceElement = ({
             await queryClient.invalidateQueries({queryKey: ["income"]});
         },
         onError: error => {
-            console.log(error)
             dispatch(errorActions.setError({message: error.message}));
         }
     });
 
     const deleteIncomeEntry = () => {
-        mutate(id);
-    }
+        const controller = new AbortController();
+        const signal = controller.signal;
+
+        mutate({id, signal});
+    };
 
     return (
         <>
@@ -69,6 +71,5 @@ const FinanceElement = ({
         </>
     )
 }
-
 
 export default FinanceElement;

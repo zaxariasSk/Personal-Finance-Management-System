@@ -17,12 +17,13 @@ const Income = sequelize.define('Income', {
         }
     },
     amount: {
-        type: DataTypes.DECIMAL(12, 2),
+        type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
     },
     description: {
         type: DataTypes.STRING,
-        allowNull: true,
+        defaultValue: "",
+        allowNull: false
     },
     source: {
         type: DataTypes.ENUM(
@@ -40,7 +41,15 @@ const Income = sequelize.define('Income', {
     date: {
         type: DataTypes.DATEONLY,
         allowNull: false,
-    },
+    }
+}, {
+    hooks: {
+        beforeValidate: (income) => {
+            if (!income.description) {
+                income.description = "";  // Ensure empty string if description is undefined or null
+            }
+        }
+    }
 });
 
 module.exports = Income;

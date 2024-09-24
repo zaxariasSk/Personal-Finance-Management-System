@@ -3,7 +3,7 @@ import Button from "../UI/Button";
 import AddIncomeElement from "./AddIncomeElement";
 import {useEffect, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
-import {addNewIncome, fetchIncome} from "../../api/incomeApi";
+import {addNewIncome, fetchIncomeByPage} from "../../api/incomeApi";
 import {errorActions} from "../../redux/slices/errorSlice";
 import {useDispatch} from "react-redux";
 import {queryClient} from "../../utils/queryClient";
@@ -17,6 +17,17 @@ const IncomePage = () => {
     const dispatch = useDispatch();
     const [addIncomePage, setAddIncomePage] = useState(false);
 
+
+    // pagination handler
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const {data} = useQuery({
+        queryKey: ["income", currentPage],
+        queryFn: ({signal}) => fetchIncomeByPage(currentPage, {signal}),
+        staleTime: 10000,
+        keepPreviousData: true
+    });
+
     const addIncomeHandler = () => {
         setAddIncomePage(true);
     }
@@ -24,12 +35,6 @@ const IncomePage = () => {
     const handleClose = () => {
         setAddIncomePage(false);
     }
-
-    const {data} = useQuery({
-        queryKey: ["income"],
-        queryFn: ({signal}) => fetchIncome({signal}),
-        staleTime: 10000
-    });
 
     useEffect(() => {
         if (loaderData.hasError) {
@@ -69,12 +74,31 @@ const IncomePage = () => {
                 </h2>
                 {/*{data}*/}
                 <div>
-                    <FinanceEntryComponent data={data}/>
+                    <FinanceEntryComponent data={data?.data} />
                 </div>
             </CardComponent>
 
             {/* Outlet for nested routes */}
-            <Outlet/>
+            <Outlet />
+
+            {/* Component for pagination */}
+            {data?.totalPages &&
+                <div>
+                    <button
+                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                        disabled={currentPage === 1}
+                    >
+                        Previous
+                    </button>
+                    <span>{currentPage} of {data?.totalPages}</span>
+                    <button
+                        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, data?.totalPages))}
+                        disabled={currentPage === data?.totalPages}
+                    >
+                        Next
+                    </button>
+                </div>
+            }
         </>
     )
 }
@@ -84,14 +108,13 @@ export default IncomePage;
 
 export async function loader() {
     const data = await queryClient.fetchQuery({
-        queryKey: ["income"],
-        queryFn: ({signal}) => fetchIncome({signal}),
+        queryKey: ["income", 1],
+        queryFn: ({signal}) => fetchIncomeByPage(1, {signal}),
     });
 
     if (data.hasError && data.statusCode === 401) {
         return redirect('/auth');
     }
-
     return data;
 }
 
