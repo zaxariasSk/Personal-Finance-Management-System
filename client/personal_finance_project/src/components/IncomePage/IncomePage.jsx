@@ -72,7 +72,6 @@ const IncomePage = () => {
                 <h2>
                     Income history
                 </h2>
-                {/*{data}*/}
                 <div>
                     <FinanceEntryComponent data={data?.data} />
                 </div>

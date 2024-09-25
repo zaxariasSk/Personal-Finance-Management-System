@@ -26,7 +26,6 @@ const EditEntryPage = () => {
         staleTime: 10000
     });
 
-    //TODO: na ftiaksw ti formas
     return (
         <Modal
             openModal={isOpen}

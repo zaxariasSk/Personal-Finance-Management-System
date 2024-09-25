@@ -7,7 +7,6 @@ const Menu = () => {
     return (
         <nav
             className={styles['navigation-container']}
-            role="navigation"
             aria-label="Main navigation">
             <ul>
                 <li>
