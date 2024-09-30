@@ -28,6 +28,10 @@ const IncomePage = () => {
         keepPreviousData: true
     });
 
+    if(data?.data.length < 1) {
+        setCurrentPage(prevState => prevState - 1);
+    }
+
     const addIncomeHandler = () => {
         setAddIncomePage(true);
     }
@@ -81,7 +85,7 @@ const IncomePage = () => {
             <Outlet />
 
             {/* Component for pagination */}
-            {data?.totalPages &&
+            {data?.totalPages > 1 &&
                 <div>
                     <button
                         onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}

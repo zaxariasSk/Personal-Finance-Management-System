@@ -30,7 +30,7 @@ app.use(function (req, res, next) {
 });
 
 app.use('/auth', loginRoutes);
-app.use(incomeRoutes);
+app.use('/income', incomeRoutes);
 
 app.use(errorHandlerMiddleware);
 

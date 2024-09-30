@@ -34,6 +34,18 @@ const Menu = () => {
                     </NavLink>
                 </li>
                 <li>
+                    <NavLink
+                        to={'/expenses'}
+                        end={true}>
+                        <img
+                            src={'/images/expenses.png'}
+                            alt="expenses"
+                            width="30"
+                            height="30"
+                        />
+                    </NavLink>
+                </li>
+                <li>
                     <div className={styles.profile}>
                         <ProfileComponent />
                     </div>

@@ -28,10 +28,10 @@ const incomeValidationRules = [
 
 
 
-router.get('/income', isAuth, getIncomeByPage);
-router.post('/income/add', isAuth, incomeValidationRules, handleValidationErrors,  createNewIncome);
-router.delete('/income/delete/:incomeId', isAuth, deleteIncome);
-router.get('/income/edit/:incomeId', isAuth, getIncome);
-router.patch('/income/edit/:incomeId', isAuth, incomeValidationRules, handleValidationErrors, editIncome);
+router.get('/', isAuth, getIncomeByPage);
+router.post('/add', isAuth, incomeValidationRules, handleValidationErrors,  createNewIncome);
+router.delete('/delete/:incomeId', isAuth, deleteIncome);
+router.get('/edit/:incomeId', isAuth, getIncome);
+router.patch('/edit/:incomeId', isAuth, incomeValidationRules, handleValidationErrors, editIncome);
 
 module.exports = router;
