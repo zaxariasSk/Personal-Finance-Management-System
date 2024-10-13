@@ -1,43 +1,44 @@
 import CardComponent from "../UI/CardComponent";
 import Button from "../UI/Button";
-import AddIncomeElement from "./AddIncomeElement";
+import AddEntryElement from "./AddEntryElement";
 import {useEffect, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
-import {addNewIncome, fetchIncomeByPage} from "../../api/incomeApi";
+import {addNewEntry, fetchEntryDataByPage} from "../../api/entryApi";
 import {errorActions} from "../../redux/slices/errorSlice";
 import {useDispatch} from "react-redux";
 import {queryClient} from "../../utils/queryClient";
-import {Outlet, redirect, useLoaderData, useNavigate} from "react-router-dom";
+import {Outlet, redirect, useLoaderData, useNavigate, useParams} from "react-router-dom";
 import FinanceEntryComponent from "../dataComponents/financeEntry/FinanceEntryComponent";
 
-const IncomePage = () => {
+const EntryPage = () => {
+    const {type: entryType} = useParams();
     const navigate = useNavigate();
     const loaderData = useLoaderData();
 
     const dispatch = useDispatch();
-    const [addIncomePage, setAddIncomePage] = useState(false);
+    const [addEntryPage, setAddEntryPage] = useState(false);
 
 
     // pagination handler
     const [currentPage, setCurrentPage] = useState(1);
 
     const {data} = useQuery({
-        queryKey: ["income", currentPage],
-        queryFn: ({signal}) => fetchIncomeByPage(currentPage, {signal}),
+        queryKey: [entryType, currentPage],
+        queryFn: ({signal}) => fetchEntryDataByPage(currentPage, entryType, {signal}),
         staleTime: 10000,
         keepPreviousData: true
     });
 
-    if(data?.data.length < 1) {
+    if(data?.data?.length < 0) {
         setCurrentPage(prevState => prevState - 1);
     }
 
-    const addIncomeHandler = () => {
-        setAddIncomePage(true);
+    const addEntryHandler = () => {
+        setAddEntryPage(true);
     }
 
     const handleClose = () => {
-        setAddIncomePage(false);
+        setAddEntryPage(false);
     }
 
     useEffect(() => {
@@ -57,24 +58,24 @@ const IncomePage = () => {
 
     return (
         <>
-            {/* add income */}
-            {addIncomePage && <AddIncomeElement
-                modal={addIncomePage}
+            {/* add entry */}
+            {addEntryPage && <AddEntryElement
+                modal={addEntryPage}
                 closeModal={handleClose}
             />}
-            <h1>Income</h1>
+            <h1>{entryType}</h1>
 
             <Button
                 className="plus_button"
                 type="submit"
-                onClick={addIncomeHandler}
+                onClick={addEntryHandler}
             >
                 +
             </Button>
 
             <CardComponent>
                 <h2>
-                    Income history
+                    {entryType} history
                 </h2>
                 <div>
                     <FinanceEntryComponent data={data?.data} />
@@ -107,12 +108,18 @@ const IncomePage = () => {
 }
 
 
-export default IncomePage;
+export default EntryPage;
 
-export async function loader() {
+export async function loader({params}) {
+    const entryType = params.type;
+
+    if (entryType !== "income" && entryType !== "expenses") {
+        return redirect('/dashboard');
+    }
+
     const data = await queryClient.fetchQuery({
-        queryKey: ["income", 1],
-        queryFn: ({signal}) => fetchIncomeByPage(1, {signal}),
+        queryKey: [entryType, 1],
+        queryFn: ({signal}) => fetchEntryDataByPage(1, entryType, {signal}),
     });
 
     if (data.hasError && data.statusCode === 401) {
@@ -121,10 +128,13 @@ export async function loader() {
     return data;
 }
 
-export async function action({request}) {
+export async function action({request, params}) {
+    const entryType = params.type;
     const formData = await request.formData();
-    const incomeData = Object.fromEntries(formData);
-    const res = await addNewIncome(incomeData);
-    await queryClient.invalidateQueries({queryKey: ["income"]});
+    const entryData = Object.fromEntries(formData);
+
+    const res = await addNewEntry(entryData, entryType);
+    await queryClient.invalidateQueries({queryKey: [entryType]});
+
     return res;
 }

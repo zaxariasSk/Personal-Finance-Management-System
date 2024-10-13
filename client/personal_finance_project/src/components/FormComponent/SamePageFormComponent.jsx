@@ -1,22 +1,25 @@
-import {useFetcher, useNavigate} from "react-router-dom";
+import {useFetcher, useParams} from "react-router-dom";
 import Button from "../UI/Button";
 import styles from "./Form.module.css"
 import {useFormik} from "formik";
 import {string, date, object, mixed} from "yup";
 import useHandleErrorOrNavigate from "../../utils/error/handleErrorOrNavigate";
 import {useEffect} from "react";
-
+// TODO: Na allaksw kai edw to income se entry
 const incomeSources = ["Salary", "Business", "Client", "Gifts", "Insurance", "Stocks", "Loan", "Other"];
+const expensesSources = ["Beauty", "Bills & Fees", "Car", "Education", "Entertainment", "Family", "Food & Drink", "Groceries", "Healthcare", "Home", "Shopping", "Sports", "Hobbies", "Travel", "Transport", "Work", "Other"];
+const combinedSources = incomeSources.concat(expensesSources);
+
 let initialValues = {
-    source: "",
+    category: "",
     amount: "",
     date: "",
     description: ""
 }
 
 let yupSchema = object({
-    source: mixed()
-        .oneOf(incomeSources)
+    category: mixed()
+        .oneOf(combinedSources)
         .required("Source is required"),
     amount: string()
         .test(
@@ -32,10 +35,19 @@ let yupSchema = object({
 
 const SamePageFormComponent = (props) => {
     const fetcher = useFetcher();
+    const {type} = useParams();
+    const categories = type === "income" ? incomeSources : expensesSources;
 
     // check if I already have initialValues
     if (props.initialData && Object.keys(props.initialData).length > 0) {
         initialValues = props.initialData;
+    } else {
+        initialValues = {
+            category: "",
+            amount: "",
+            date: "",
+            description: ""
+        }
     }
 
     const formik = useFormik({
@@ -59,32 +71,33 @@ const SamePageFormComponent = (props) => {
 
     return (
         <fetcher.Form
-            method="POST"
+            autoFocus={false}
+            method={props.method}
             className={styles.form}
             onSubmit={formik.handleSubmit}
             noValidate={true}>
             <div>
-                <label htmlFor="source">Source</label>
+                <label htmlFor="category">Category</label>
                 <select
-                    name="source"
-                    id="source"
-                    value={formik.values.source}
-                    onChange={(e) => {
-                        formik.setFieldValue('source', e.target.value, true);
+                    name="category"
+                    id="category"
+                    value={formik.values.category}
+                    onChange={async (e) => {
+                        await formik.setFieldValue('category', e.target.value, true);
                     }}
-                    onBlur={formik.handleBlur}
-                    className={formik.touched.source && formik.errors.source ? styles.invalid : styles.submit_select}>
-                    <option value="">Select a source</option>
-                    {incomeSources.map((sourceValue) => (
+                    onBlur={(e) => formik.setFieldValue('category', e.target.value, true)}
+                    className={formik.touched.category && formik.errors.category ? styles.invalid : styles.submit_select}>
+                    <option value="">Select a category</option>
+                    {categories.map((categoryValue) => (
                         <option
-                            key={sourceValue}
-                            value={sourceValue}>
-                            {sourceValue}
+                            key={categoryValue}
+                            value={categoryValue}>
+                            {categoryValue}
                         </option>
                     ))}
                 </select>
-                {formik.touched.source && formik.errors.source ? (
-                    <div className={styles.errorMessage}>{formik.errors.source}</div>
+                {formik.touched.category && formik.errors.category ? (
+                    <div className={styles.errorMessage}>{formik.errors.category}</div>
                 ) : null}
             </div>
 

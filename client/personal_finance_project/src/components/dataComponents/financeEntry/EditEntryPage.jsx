@@ -1,5 +1,5 @@
 import {queryClient} from "../../../utils/queryClient";
-import {editIncome, getEntryById} from "../../../api/incomeApi";
+import {editEntry, getEntryById} from "../../../api/entryApi";
 import {redirect, useActionData, useNavigate, useParams} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 import SamePageFormComponent from "../../FormComponent/SamePageFormComponent";
@@ -8,7 +8,8 @@ import {useState} from "react";
 import CardComponent from "../../UI/CardComponent";
 
 const EditEntryPage = () => {
-    const entryId = useParams();
+    const {id: entryId, type: entryType} = useParams();
+
     const [isOpen, setIsOpen] = useState(true);
     const navigate = useNavigate();
     const actionData = useActionData();
@@ -16,13 +17,13 @@ const EditEntryPage = () => {
     const closeModal = () => {
         if (!actionData) {
             setIsOpen(false);
-            navigate("/income");
+            navigate(`/entry/${entryType}`);
         }
     }
 
     const {data} = useQuery({
-        queryKey: ["income", {id: entryId.id}],
-        queryFn: ({signal}) => getEntryById(entryId.id, {signal}),
+        queryKey: [entryType, {id: entryId}],
+        queryFn: ({signal}) => getEntryById(entryId, entryType,{signal}),
         staleTime: 10000
     });
 
@@ -46,10 +47,15 @@ export default EditEntryPage;
 
 export async function loader({params}) {
     const entryId = params.id;
+    const entryType = params.type;
+
+    if (entryType !== "income" && entryType !== "expenses") {
+        return redirect('/dashboard');
+    }
 
     const data = await queryClient.fetchQuery({
-        queryKey: ["income", {id: entryId}],
-        queryFn: ({signal}) => getEntryById(entryId, {signal}),
+        queryKey: [entryType, {id: entryId}],
+        queryFn: ({signal}) => getEntryById(entryId, entryType, {signal}),
     });
 
     if (data.hasError && data.statusCode === 401) {
@@ -64,15 +70,17 @@ export async function action({
                                  request
                              }) {
     const entryId = params.id;
+    const entryType = params.type;
+
     const formData = await request.formData();
-    const incomeData = Object.fromEntries(formData);
-    const res = await editIncome(entryId, incomeData);
-    await queryClient.invalidateQueries({queryKey: ["income", {id: entryId}]});
+    const entryData = Object.fromEntries(formData);
+    const res = await editEntry(entryId, entryType, entryData);
+    await queryClient.invalidateQueries({queryKey: [entryType]});
 
     if (res.statusCode === 401) {
         return redirect('/auth');
     } else if (res.statusCode) {
         return res;
     }
-    return redirect("/income");
+    return redirect(`/entry/${entryType}`);
 }

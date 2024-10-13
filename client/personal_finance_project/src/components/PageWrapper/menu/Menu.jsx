@@ -23,7 +23,7 @@ const Menu = () => {
                 </li>
                 <li>
                     <NavLink
-                        to={'/income'}
+                        to={'/entry/income'}
                         end={true}>
                         <img
                             src={'/images/income.png'}
@@ -35,7 +35,7 @@ const Menu = () => {
                 </li>
                 <li>
                     <NavLink
-                        to={'/expenses'}
+                        to={'/entry/expenses'}
                         end={true}>
                         <img
                             src={'/images/expenses.png'}

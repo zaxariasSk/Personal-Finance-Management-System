@@ -1,9 +1,9 @@
 const {InternalServerError} = require("../errors/index");
-const Income = require("../model/incomeModel");
+const Expenses = require("../model/expensesModel");
 
-exports.getIncomeData = async (userId) => {
+exports.getExpensesData = async (userId) => {
     try {
-        return await Income.findAll({
+        return await Expenses.findAll({
             where: {userId: userId},
             attributes: {
                 exclude: ["userId", "createdAt", "updatedAt"]
@@ -15,9 +15,9 @@ exports.getIncomeData = async (userId) => {
 
 }
 
-exports.getIncomeDataByPage = async (userId, page, limit) => {
+exports.getExpensesDataByPage = async (userId, page, limit) => {
     try {
-        const {count, rows} = await Income.findAndCountAll({
+        const {count, rows} = await Expenses.findAndCountAll({
             where: {
                 userId
             },
@@ -34,7 +34,7 @@ exports.getIncomeDataByPage = async (userId, page, limit) => {
         if(!count && !rows) {
             return {
                 hasError: true,
-                message: "No income data found"
+                message: "No expenses data found"
             };
         }
 
@@ -48,8 +48,8 @@ exports.getIncomeDataByPage = async (userId, page, limit) => {
     }
 }
 
-exports.addNewIncome = async (userId, data) => {
-    const income = await Income.create({
+exports.addNewExpenses = async (userId, data) => {
+    const expenses = await Expenses.create({
         userId,
         amount: data.amount,
         category: data.category,
@@ -57,18 +57,18 @@ exports.addNewIncome = async (userId, data) => {
         description: data.description || null
     });
 
-    if (!income) {
+    if (!expenses) {
         return {
             hasError: true,
-            message: "Failed to add new income data. Please try again later"
+            message: "Failed to add new expenses data. Please try again later"
         };
     }
 
-    return income;
+    return expenses;
 }
 
-exports.deleteIncomeById = async (userId, id) => {
-    const deletedRows = await Income.destroy({
+exports.deleteExpensesById = async (userId, id) => {
+    const deletedRows = await Expenses.destroy({
         where: {
             id,
             userId
@@ -78,21 +78,21 @@ exports.deleteIncomeById = async (userId, id) => {
     if (deletedRows < 1) {
         return {
             hasError: true,
-            message: "Failed to delete this income entry. Try again later"
+            message: "Failed to delete this expenses entry. Try again later"
         }
     }
 
     return deletedRows;
 }
 
-exports.editIncomeById = async (userId, incomeId, data) => {
+exports.editExpensesById = async (userId, expensesId, data) => {
     try {
         console.log("data: " + JSON.stringify(data))
-        const editedEntry = await Income.update(
+        const editedEntry = await Expenses.update(
             data,
             {
                 where: {
-                    id: incomeId,
+                    id: expensesId,
                     userId
                 }
             });
@@ -110,10 +110,10 @@ exports.editIncomeById = async (userId, incomeId, data) => {
     }
 }
 
-exports.getIncomeById = async (userId, incomeId) => {
-    const editedEntry = await Income.findOne({
+exports.getExpensesById = async (userId, expensesId) => {
+    const editedEntry = await Expenses.findOne({
         where: {
-            id: incomeId,
+            id: expensesId,
             userId: userId
         },
         attributes: {

@@ -22,7 +22,7 @@ const FinanceEntryComponent = ({data}) => {
                     <FinanceElement
                         key={entry.id}
                         id={entry.id}
-                        source={entry.source}
+                        source={entry.source || entry.category}
                         amount={entry.amount}
                         date={entry.date}
                         description={entry.description}

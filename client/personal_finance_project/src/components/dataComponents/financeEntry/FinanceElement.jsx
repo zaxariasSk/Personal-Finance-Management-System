@@ -1,8 +1,8 @@
 import styles from "./FinanceElement.module.css";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import Button from "../../UI/Button";
 import {useMutation} from "@tanstack/react-query";
-import {deleteIncome} from "../../../api/incomeApi";
+import {deleteEntry} from "../../../api/entryApi";
 import {queryClient} from "../../../utils/queryClient";
 import {useDispatch} from "react-redux";
 import {errorActions} from "../../../redux/slices/errorSlice";
@@ -14,28 +14,30 @@ const FinanceElement = ({
                             date,
                             description
                         }) => {
+    const location = useLocation();
+    const entryType = location.pathname.split('/').at(-1);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const {mutate} = useMutation({
-        mutationFn: ({id, signal}) => deleteIncome(id, {signal}),
+        mutationFn: ({id, entryType, signal}) => deleteEntry(id, entryType, {signal}),
         onSuccess: async (e) => {
             if (e?.statusCode === 401) {
                 navigate('/auth');
             }
-            await queryClient.invalidateQueries({queryKey: ["income"]});
+            await queryClient.invalidateQueries({queryKey: [entryType]});
         },
         onError: error => {
             dispatch(errorActions.setError({message: error.message}));
         }
     });
 
-    const deleteIncomeEntry = () => {
+    const deleteEntryHandler = () => {
         const controller = new AbortController();
         const signal = controller.signal;
 
-        mutate({id, signal});
+        mutate({id, entryType, signal});
     };
 
     return (
@@ -57,7 +59,7 @@ const FinanceElement = ({
                     </Link>
                 </td>
                 <td>
-                    <Button onClick={deleteIncomeEntry}>
+                    <Button onClick={deleteEntryHandler}>
                         <img
                             src={'/images/delete.svg'}
                             alt="delete"

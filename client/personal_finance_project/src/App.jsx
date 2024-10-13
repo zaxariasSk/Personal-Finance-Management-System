@@ -4,10 +4,13 @@ import {Provider} from 'react-redux';
 import DashboardElement from "./components/DashboardElement/DashboardElement";
 import PrivateRoute from "./components/AuthenticationRoute/PrivateRoute";
 import AuthPage from "./components/AuthPage/AuthPage";
-import IncomePage, {action as addIncomeAction, loader as incomePageLoader} from "./components/IncomePage/IncomePage";
+import EntryPage, {action as addEntryAction, loader as entryPageLoader} from "./components/IncomePage/EntryPage";
 import {queryClient} from "./utils/queryClient";
 import {QueryClientProvider} from '@tanstack/react-query'
-import EditEntryPage, {loader as editEntryLoader, action as editEntryAction} from "./components/dataComponents/financeEntry/EditEntryPage";
+import EditEntryPage, {
+    loader as editEntryLoader,
+    action as editEntryAction
+} from "./components/dataComponents/financeEntry/EditEntryPage";
 
 const router = createBrowserRouter([
     {
@@ -25,13 +28,13 @@ const router = createBrowserRouter([
                 element: <DashboardElement />
             },
             {
-                path: "/income",
-                element: <IncomePage />,
-                loader: incomePageLoader,
-                action: addIncomeAction,
+                path: "/entry/:type",
+                element: <EntryPage />,
+                loader: entryPageLoader,
+                action: addEntryAction,
                 children: [{
                     path: "edit/:id",
-                    element: <EditEntryPage/>,
+                    element: <EditEntryPage />,
                     loader: editEntryLoader,
                     action: editEntryAction
                 }]
@@ -43,7 +46,9 @@ const router = createBrowserRouter([
     },
     {
         path: "*",
-        element: <Navigate to="/dashboard" replace={true} />
+        element: <Navigate
+            to="/dashboard"
+            replace={true} />
     }
 
 ]);

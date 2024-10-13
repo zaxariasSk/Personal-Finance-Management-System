@@ -2,7 +2,7 @@ const sequelize = require('../config/database');
 const {DataTypes} = require('sequelize');
 const User = require('./userModel');
 
-const Expense = sequelize.define("Expense", {
+const Expenses = sequelize.define("Expense", {
     id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
@@ -61,4 +61,4 @@ const Expense = sequelize.define("Expense", {
     }
 });
 
-module.exports = Expense;
+module.exports = Expenses;

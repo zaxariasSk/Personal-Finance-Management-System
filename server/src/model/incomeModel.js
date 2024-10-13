@@ -25,7 +25,7 @@ const Income = sequelize.define('Income', {
         defaultValue: "",
         allowNull: false
     },
-    source: {
+    category: {
         type: DataTypes.ENUM(
             "Salary",
             "Business",

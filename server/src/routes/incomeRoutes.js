@@ -11,9 +11,9 @@ const {check} = require("express-validator");
 const {handleValidationErrors} = require('../middleware/validation');
 
 const incomeValidationRules = [
-    check('source')
+    check('category')
         .isIn(["Salary", "Business", "Client", "Gifts", "Insurance", "Stocks", "Loan", "Other"])
-        .withMessage('Invalid income source'),
+        .withMessage('Invalid income category'),
     check('amount')
         .isFloat({gt: 0})
         .withMessage('Amount must be greater than zero and a valid decimal'),

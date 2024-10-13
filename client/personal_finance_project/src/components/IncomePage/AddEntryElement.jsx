@@ -2,7 +2,7 @@ import Modal from "../UI/Modal";
 import SamePageFormComponent from "../FormComponent/SamePageFormComponent";
 import CardComponent from "../UI/CardComponent";
 
-const AddIncomeElement = ({modal, closeModal}) => {
+const AddEntryElement = ({modal, closeModal}) => {
     return (
         <Modal
             openModal={modal}
@@ -16,4 +16,4 @@ const AddIncomeElement = ({modal, closeModal}) => {
     )
 }
 
-export default AddIncomeElement;
+export default AddEntryElement;

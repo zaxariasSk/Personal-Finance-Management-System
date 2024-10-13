@@ -1,6 +1,6 @@
-export const fetchIncomeByPage = async (page, {signal}) => {
+export const fetchEntryDataByPage = async (page, entryType, {signal}) => {
     try {
-        const res = await fetch(`http://localhost:3000/income?page=${page}`, {
+        const res = await fetch(`http://localhost:3000/${entryType}?page=${page}`, {
             credentials: "include",
             signal
         });
@@ -31,15 +31,15 @@ export const fetchIncomeByPage = async (page, {signal}) => {
     }
 };
 
-export const addNewIncome = async (income) => {
+export const addNewEntry = async (data, entryType) => {
     try {
-        const res = await fetch('http://localhost:3000/income/add', {
+        const res = await fetch(`http://localhost:3000/${entryType}/add`, {
             method: "POST",
             credentials: "include",
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(income)
+            body: JSON.stringify(data)
         });
 
         return await res.json();
@@ -51,9 +51,9 @@ export const addNewIncome = async (income) => {
     }
 };
 
-export const deleteIncome = async (incomeId, {signal}) => {
+export const deleteEntry = async (entryId, entryType, {signal}) => {
     try {
-        const res = await fetch(`http://localhost:3000/income/delete/${incomeId}`, {
+        const res = await fetch(`http://localhost:3000/${entryType}/delete/${entryId}`, {
             method: "DELETE",
             credentials: "include",
             headers: {
@@ -80,8 +80,8 @@ export const deleteIncome = async (incomeId, {signal}) => {
     }
 }
 
-export const getEntryById = async (entryId, {signal}) => {
-    const res = await fetch(`http://localhost:3000/income/edit/${entryId}`, {
+export const getEntryById = async (entryId, entryType, {signal}) => {
+    const res = await fetch(`http://localhost:3000/${entryType}/edit/${entryId}`, {
         credentials: "include",
         signal
     });
@@ -92,14 +92,13 @@ export const getEntryById = async (entryId, {signal}) => {
     }
 
     // Parse and return the JSON data
-    const data = await res.json();
-    return data;
+    return await res.json();
 };
 
 
-export const editIncome = async (incomeId, data) => {
+export const editEntry = async (entryId, entryType, data) => {
     try {
-        const res = await fetch(`http://localhost:3000/income/edit/${incomeId}`, {
+        const res = await fetch(`http://localhost:3000/${entryType}/edit/${entryId}`, {
             method: "PATCH",
             credentials: "include",
             headers: {
