@@ -135,6 +135,5 @@ export async function action({request, params}) {
 
     const res = await addNewEntry(entryData, entryType);
     await queryClient.invalidateQueries({queryKey: [entryType]});
-
     return res;
 }

@@ -10,6 +10,7 @@ require('./config/relationships');
 const loginRoutes = require('./routes/loginRoutes');
 const incomeRoutes = require('./routes/incomeRoutes');
 const expensesRoutes = require('./routes/expensesRoutes');
+const budgetRoutes = require('./routes/budgetRoutes');
 
 app.use(cookieParser());
 app.use(express.json());
@@ -33,6 +34,7 @@ app.use(function (req, res, next) {
 app.use('/auth', loginRoutes);
 app.use('/income', incomeRoutes);
 app.use('/expenses', expensesRoutes);
+app.use('/budget', budgetRoutes);
 
 app.use(errorHandlerMiddleware);
 

@@ -41,7 +41,7 @@ export const addNewEntry = async (data, entryType) => {
             },
             body: JSON.stringify(data)
         });
-
+        
         return await res.json();
     } catch (err) {
         return {

@@ -55,8 +55,8 @@ const createNewIncome = asyncHandler(async (req, res, next) => {
     }
 
     res.status(StatusCodes.CREATED).json({
+        created: true,
         message: "New income created successfully",
-        newIncome
     });
 });
 

@@ -10,7 +10,8 @@ const {
 const {
     InternalServerError,
     NotFoundError,
-} = require("../errors");
+    UnprocessableEntityError,
+} = require("../errors/index");
 const {StatusCodes} = require("http-status-codes");
 
 const getAllExpenses = asyncHandler(async (req, res, next) => {
@@ -52,10 +53,11 @@ const createNewExpenses = asyncHandler(async (req, res, next) => {
     const newExpenses = await addNewExpenses(userId, data);
 
     if (newExpenses.hasError) {
-        throw new InternalServerError(newExpenses.message);
+        throw new UnprocessableEntityError(newExpenses.message);
     }
 
     res.status(StatusCodes.CREATED).json({
+        created: true,
         message: "New expenses created successfully"
     });
 });

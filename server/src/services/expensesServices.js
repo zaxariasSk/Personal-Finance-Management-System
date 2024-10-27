@@ -17,7 +17,10 @@ exports.getExpensesData = async (userId) => {
 
 exports.getExpensesDataByPage = async (userId, page, limit) => {
     try {
-        const {count, rows} = await Expenses.findAndCountAll({
+        const {
+            count,
+            rows
+        } = await Expenses.findAndCountAll({
             where: {
                 userId
             },
@@ -31,7 +34,7 @@ exports.getExpensesDataByPage = async (userId, page, limit) => {
             }
         });
 
-        if(!count && !rows) {
+        if (!count && !rows) {
             return {
                 hasError: true,
                 message: "No expenses data found"
@@ -49,40 +52,49 @@ exports.getExpensesDataByPage = async (userId, page, limit) => {
 }
 
 exports.addNewExpenses = async (userId, data) => {
-    const expenses = await Expenses.create({
-        userId,
-        amount: data.amount,
-        category: data.category,
-        date: new Date(data.date),
-        description: data.description || null
-    });
+    try {
+        const expenses = await Expenses.create({
+            userId,
+            amount: data.amount,
+            category: data.category,
+            date: new Date(data.date),
+            description: data.description || null
+        });
 
-    if (!expenses) {
-        return {
-            hasError: true,
-            message: "Failed to add new expenses data. Please try again later"
-        };
+        if (!expenses) {
+            return {
+                hasError: true,
+                message: "Failed to add new expenses data. Please try again later"
+            };
+        }
+
+        return expenses;
+    } catch (e) {
+        throw new InternalServerError("Something went wrong with the server. We are working on it to resolve your problem.")
     }
-
-    return expenses;
 }
 
 exports.deleteExpensesById = async (userId, id) => {
-    const deletedRows = await Expenses.destroy({
-        where: {
-            id,
-            userId
-        }
-    });
+    try {
 
-    if (deletedRows < 1) {
-        return {
-            hasError: true,
-            message: "Failed to delete this expenses entry. Try again later"
+        const deletedRows = await Expenses.destroy({
+            where: {
+                id,
+                userId
+            }
+        });
+
+        if (deletedRows < 1) {
+            return {
+                hasError: true,
+                message: "Failed to delete this expenses entry. Try again later"
+            }
         }
+
+        return deletedRows;
+    } catch (e) {
+        throw new InternalServerError("Something went wrong with the server. We are working on it to resolve your problem.")
     }
-
-    return deletedRows;
 }
 
 exports.editExpensesById = async (userId, expensesId, data) => {
@@ -111,22 +123,26 @@ exports.editExpensesById = async (userId, expensesId, data) => {
 }
 
 exports.getExpensesById = async (userId, expensesId) => {
-    const editedEntry = await Expenses.findOne({
-        where: {
-            id: expensesId,
-            userId: userId
-        },
-        attributes: {
-            exclude: ["userId", "createdAt", "updatedAt", "id"]
-        }
-    });
+    try {
+        const editedEntry = await Expenses.findOne({
+            where: {
+                id: expensesId,
+                userId: userId
+            },
+            attributes: {
+                exclude: ["userId", "createdAt", "updatedAt", "id"]
+            }
+        });
 
-    if (!editedEntry) {
-        return {
-            hasError: true,
-            message: "Failed to find this entry"
+        if (!editedEntry) {
+            return {
+                hasError: true,
+                message: "Failed to find this entry"
+            }
         }
+
+        return editedEntry;
+    } catch (e) {
+        throw new InternalServerError("Something went wrong with the server. We are working on it to resolve your problem.")
     }
-
-    return editedEntry;
 }

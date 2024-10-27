@@ -26,22 +26,17 @@ const Budget = sequelize.define('Budget', {
         allowNull: false,
     },
     month: {
-        type: DataTypes.STRING,  // Store the month as a string ("January", "February", etc.)
+        type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+            min: 1,
+            max: 12
+        }
     },
     year: {
-        type: DataTypes.STRING,  // Store the year as a string (e.g., "2024")
+        type: DataTypes.STRING,
         allowNull: false,
     },
-});
-
-// Define relationships between User and Budget
-User.hasMany(Budget, { foreignKey: 'userId' });
-Budget.belongsTo(User, {
-    foreignKey: 'userId',
-    constraints: true,
-    onDelete: 'CASCADE',  // If a user is deleted, their budgets should also be deleted
-    onUpdate: 'CASCADE'
 });
 
 module.exports = Budget;
