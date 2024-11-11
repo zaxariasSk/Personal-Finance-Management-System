@@ -4,7 +4,7 @@ const responseErrorHandler = async (res) => {
             return {
                 hasError: true,
                 message: "No token provided",
-                statusCode: 401
+                statusCode: "401"
             }
         }
         const error = await res.json();
@@ -17,15 +17,16 @@ const responseErrorHandler = async (res) => {
 }
 
 
-export const fetchBudgetDataByPage = async (page, {signal}) => {
+export const fetchBudgetListDataByPage = async (page, {signal}) => {
     try {
         const res = await fetch(`http://localhost:3000/budget?page=${page}`, {
             credentials: "include",
             signal
         });
 
-        const error = responseErrorHandler(res);
-        if(error?.hasError) {
+        const error = await responseErrorHandler(res);
+
+        if (error?.hasError) {
             return error;
         }
 
@@ -50,15 +51,37 @@ export const addNewBudget = async (data) => {
         });
         const error = await responseErrorHandler(res);
 
-        if(error?.hasError) {
+        if (error?.hasError) {
             return error;
         }
-        
+
         return await res.json();
     } catch (e) {
         return {
             hasError: true,
             error: "A network error occurred"
         };
+    }
+}
+
+export const fetchBudgetData = async (id, {signal}) => {
+    try {
+        const res = await fetch(`http://localhost:3000/budget/${id}`, {
+            credentials: "include",
+            signal
+        });
+
+        const error = await responseErrorHandler(res);
+
+        if(error?.hasError) {
+            return error;
+        }
+
+        return await res.json();
+    } catch (e) {
+        return {
+            hasError: true,
+            error: "A network error occurred"
+        }
     }
 }

@@ -2,7 +2,7 @@ import CardComponent from "../UI/CardComponent";
 import Button from "../UI/Button";
 import AddEntryElement from "./AddEntryElement";
 import {useEffect, useState} from "react";
-import {useQuery} from "@tanstack/react-query";
+import {keepPreviousData, useQuery} from "@tanstack/react-query";
 import {addNewEntry, fetchEntryDataByPage} from "../../api/entryApi";
 import {errorActions} from "../../redux/slices/errorSlice";
 import {useDispatch} from "react-redux";
@@ -26,7 +26,7 @@ const EntryPage = () => {
         queryKey: [entryType, currentPage],
         queryFn: ({signal}) => fetchEntryDataByPage(currentPage, entryType, {signal}),
         staleTime: 10000,
-        keepPreviousData: true
+        placeholderData: keepPreviousData
     });
 
     if(data?.data?.length < 0) {
@@ -119,7 +119,7 @@ export async function loader({params}) {
 
     const data = await queryClient.fetchQuery({
         queryKey: [entryType, 1],
-        queryFn: ({signal}) => fetchEntryDataByPage(1, entryType, {signal}),
+        queryFn: async ({signal}) => await fetchEntryDataByPage(1, entryType, {signal}),
     });
 
     if (data.hasError && data.statusCode === 401) {

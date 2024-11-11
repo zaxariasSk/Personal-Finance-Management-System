@@ -1,15 +1,39 @@
 import BudgetList from "../dataComponents/budget/BudgetList";
 import {queryClient} from "../../utils/queryClient";
 import {redirect, useLoaderData} from "react-router-dom";
-import {addNewBudget, fetchBudgetDataByPage} from "../../api/budgetApi";
-import {useState} from "react";
+import {addNewBudget, fetchBudgetListDataByPage, fetchBudgetData} from "../../api/budgetApi";
+import {useEffect, useState} from "react";
 import AddBudgetElement from "./AddBudgetElement";
 import Button from "../UI/Button";
+import {keepPreviousData, useQuery} from "@tanstack/react-query";
 
 const BudgetElement = () => {
-    const loaderData = useLoaderData();
-    console.log(loaderData);
+    const {budgetList} = useLoaderData();
     const [addBudget, setAddBudget] = useState(false);
+    const [page, setPage] = useState(1);
+    const [budgetId, setBudgetId] = useState(budgetList?.budgetData[0].id);
+
+    const {data} = useQuery({
+        queryKey: ["budget", page],
+        queryFn: ({signal}) => fetchBudgetListDataByPage(page, {signal}),
+        staleTime: 1000,
+        placeholderData: keepPreviousData
+    });
+
+    // na trabao ta data tou budget me ola ta expenses pou exo.
+    // Na ftiaksw function gia auto, kai sto front end kai sto backend
+    const budgetData = useQuery({
+        queryKey: ["budget", budgetId],
+        queryFn: async ({signal}) => await fetchBudgetData(budgetId, {signal}),
+        staleTime: 1000,
+        placeholderData: keepPreviousData
+    });
+
+    console.log(data);
+
+    const budgetIdHandler = (id) => {
+        setBudgetId(id);
+    }
 
     const closeAddBudget = () => {
         setAddBudget(false);
@@ -18,7 +42,9 @@ const BudgetElement = () => {
     const addBudgetHandler = () => {
         setAddBudget(true);
     }
-
+useEffect(() => {
+    console.log(budgetId);
+})
     return (
         <section>
             <div>
@@ -38,9 +64,10 @@ const BudgetElement = () => {
                 closeFn={closeAddBudget} />}
 
             {/* Budget List */}
-            <BudgetList />
+            <BudgetList getBudgetId={budgetIdHandler} budgetDataList={data.budgetData} />
 
-            {/*<BudgetData />*/}
+            {/* BudgetData */}
+            {/*<BudgetDataElement />*/}
         </section>
     )
 }
@@ -48,21 +75,29 @@ const BudgetElement = () => {
 export default BudgetElement;
 
 export async function loader() {
-    const data = queryClient.fetchQuery({
+    const budgetList = await queryClient.fetchQuery({
         queryKey: ["budget", 1],
-        queryFn: ({signal}) => fetchBudgetDataByPage(1, {signal})
+        queryFn: async ({signal}) => await fetchBudgetListDataByPage(1, {signal})
     });
 
-    console.log(data);
-
-    if(data.hasError && data.statusCode === "401") {
+        console.log(budgetList);
+    if (budgetList.hasError && budgetList.statusCode === "401") {
         return redirect('/auth');
     }
 
-    return data;
+    const budgetData = await queryClient.fetchQuery({
+        queryKey: ["budget", budgetList?.budgetData[0].id],
+        queryFn: async ({signal}) => await fetchBudgetData(budgetList?.budgetData[0].id, {signal})
+    });
+
+    return {
+        budgetList,
+        budgetData
+    };
 }
 
 export async function action({request}) {
+    console.log("it just runs");
     const formData = await request.formData();
     const budgetData = Object.fromEntries(formData);
 

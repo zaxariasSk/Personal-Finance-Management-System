@@ -146,3 +146,7 @@ exports.getExpensesById = async (userId, expensesId) => {
         throw new InternalServerError("Something went wrong with the server. We are working on it to resolve your problem.")
     }
 }
+
+exports.getExpensesDataByDate = async (userId, date) => {
+
+}

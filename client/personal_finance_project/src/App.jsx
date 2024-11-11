@@ -12,7 +12,7 @@ import EditEntryPage, {
     loader as editEntryLoader,
     action as editEntryAction
 } from "./components/dataComponents/financeEntry/EditEntryPage";
-import {action as addBudgetAction} from "./components/BudgetPage/BudgetElement";
+import {action as addBudgetAction, loader as budgetPageLoader} from "./components/BudgetPage/BudgetElement";
 
 const BudgetElement = lazy(() => import('./components/BudgetPage/BudgetElement'));
 const router = createBrowserRouter([
@@ -49,7 +49,8 @@ const router = createBrowserRouter([
                         <BudgetElement />
                     </Suspense>
                 ),
-                // action: () => import('./components/BudgetPage/BudgetElement').then(module => module.action())
+                loader: budgetPageLoader,
+                // action: ({request}) => import('./components/BudgetPage/BudgetElement').then(module => module.action({request})),
                 action: addBudgetAction
             }]
     },

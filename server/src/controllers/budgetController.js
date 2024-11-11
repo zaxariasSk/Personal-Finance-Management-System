@@ -2,19 +2,21 @@ const asyncHandler = require("express-async-handler");
 const {StatusCodes} = require("http-status-codes");
 const {
     addNewBudget,
-    getBudgetDataByPage
+    getBudgetListDataByPage,
+    getBudgetDate
 } = require("../services/budgetServices");
 const {
     UnprocessableEntityError,
     NotFoundError
 } = require("../errors/index");
+const {getExpensesDataByDate} = require("../services/expensesServices");
 
-const getBudgetByPage = async (req, res) => {
+const getBudgetListByPage = asyncHandler( async (req, res) => {
     const userId = res.locals.user.id;
     const page = parseInt(req.body.page) || 1;
     const limit = 5;
 
-    const data = await getBudgetDataByPage(userId, page, limit);
+    const data = await getBudgetListDataByPage(userId, page, limit);
 
     if (data.hasError) {
         throw new NotFoundError(data.message);
@@ -26,13 +28,13 @@ const getBudgetByPage = async (req, res) => {
     } = data;
 
     res.status(StatusCodes.OK).json({
-        data: entries,
+        budgetData: entries,
         totalItems,
         totalPages: Math.ceil(totalItems / limit),
         currentPage: page
     });
 //    TODO: Na balw sto frontend ta nea data me ta page
-}
+});
 
 const createNewBudget = asyncHandler(async (req, res) => {
     const userId = res.locals.user.id;
@@ -54,6 +56,18 @@ const createNewBudget = asyncHandler(async (req, res) => {
 });
 
 
+const getBudgetData = async (req, res, next) => {
+    const userId = res.locals.user.id;
+    const budgetId = req.params.id;
+
+    const month = await getBudgetDate(userId, budgetId);
+    const budgetData = await getExpensesDataByDate();
+
+    res.status(200).json({});
+}
+
 module.exports = {
-    createNewBudget
+    createNewBudget,
+    getBudgetListByPage,
+    getBudgetData
 }
