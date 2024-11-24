@@ -9,6 +9,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
         });
     }
     // Handle other types of errors
+    console.log(err);
     const error = new Error(err);
     console.log(error);
     res.status(500).json({message: 'Internal Server Error'});

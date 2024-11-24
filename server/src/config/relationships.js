@@ -35,3 +35,20 @@ Budget.belongsTo(User, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
 });
+
+// Many-to-Many relationship between Budget and Expense
+Budget.belongsToMany(Expense, {
+    through: 'BudgetExpense', // Name of the junction table
+    foreignKey: 'budgetId', // Foreign key in BudgetExpense pointing to Budget
+    otherKey: 'expenseId', // Foreign key in BudgetExpense pointing to Expense
+    onDelete: 'CASCADE', // Optional: specify behavior when a budget is deleted
+    onUpdate: 'CASCADE',
+});
+
+Expense.belongsToMany(Budget, {
+    through: 'BudgetExpense', // Name of the junction table
+    foreignKey: 'expenseId', // Foreign key in BudgetExpense pointing to Expense
+    otherKey: 'budgetId', // Foreign key in BudgetExpense pointing to Budget
+    onDelete: 'CASCADE', // Optional: specify behavior when an expense is deleted
+    onUpdate: 'CASCADE',
+});

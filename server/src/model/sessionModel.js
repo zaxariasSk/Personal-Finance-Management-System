@@ -11,7 +11,6 @@ const Session = sequelize.define('Session', {
     },
     userId: {
         type: DataTypes.UUID,
-        unique: true,
         references: {
             model: User,
             key: 'id'

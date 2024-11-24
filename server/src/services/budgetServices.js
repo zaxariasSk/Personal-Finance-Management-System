@@ -38,6 +38,21 @@ exports.getBudgetListDataByPage = async (userId, page, limit) => {
 
 exports.addNewBudget = async (userId, data) => {
     try {
+        const budgetExists = await Budget.findOne({
+            where: {
+                category: data.category,
+                month: data.month,
+                year: data.year,
+            }
+        })
+
+        if(budgetExists) {
+            return {
+                hasError: true,
+                message: "This budget already exists."
+            }
+        }
+
         const newBudget = await Budget.create({
             userId,
             amount: data.amount,
@@ -59,18 +74,40 @@ exports.addNewBudget = async (userId, data) => {
     }
 }
 
-exports.getBudgetDate = async (userId, budgetId) => {
+exports.getBudgetById = async (userId, budgetId) => {
     try {
-        const date = await Budget.findAll({
-            attributes: ["month", "year"],
+        const budget = await Budget.findAll({
             where: {
                 userId,
                 id: budgetId
             },
-            attributes: {exclude: ['userId', "createdAt", "updatedAt"]}
+            attributes: {exclude: ["userId", "createdAt", "updatedAt"]}
         });
 
-        if(!date) {
+        if (!budget) {
+            return {
+                hasError: true,
+                message: "Failed to find budget's data"
+            }
+        }
+
+        return budget;
+    } catch (e) {
+        throw new InternalServerError("Something went wrong with the server. We are working on it to resolve your problem.")
+    }
+}
+
+exports.getBudgetDate = async (userId, budgetId) => {
+    try {
+        const date = await Budget.findAll({
+            where: {
+                userId,
+                id: budgetId
+            },
+            attributes: ["month", "year"]
+        });
+
+        if (!date) {
             return {
                 hasError: true,
                 message: "Failed to find budget's data or date"
@@ -78,6 +115,28 @@ exports.getBudgetDate = async (userId, budgetId) => {
         }
 
         return date;
+    } catch (e) {
+        throw new InternalServerError("Something went wrong with the server. We are working on it to resolve your problem.")
+    }
+}
+
+exports.deleteBudgetById = async (budgetId, userId) => {
+    try {
+        const res = await Budget.destroy({
+            where: {
+                userId,
+                budgetId
+            }
+        });
+
+        if (!res) {
+            return {
+                hasError: true,
+                message: "Failed to delete Budget"
+            }
+        }
+
+        return res;
     } catch (e) {
         throw new InternalServerError("Something went wrong with the server. We are working on it to resolve your problem.")
     }

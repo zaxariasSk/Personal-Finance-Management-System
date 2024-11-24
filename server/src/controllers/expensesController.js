@@ -76,7 +76,6 @@ const deleteExpenses = asyncHandler(async (req, res) => {
 });
 
 const editExpenses = asyncHandler(async (req, res) => {
-    console.log(req.params);
     const {expenseId} = req.params;
     const userId = res.locals.user.id
     const data = req.body;
@@ -98,7 +97,7 @@ const getExpenses = asyncHandler(async (req, res) => {
     const userId = res.locals.user.id;
 
     const expenses = await getExpensesById(userId, expenseId);
-    console.log(expenses)
+
     if (expenses.hasError) {
         throw new NotFoundError(expenses.message);
     }

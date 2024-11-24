@@ -27,9 +27,8 @@ const expenseValidationRules = [
 ];
 
 
-
 router.get('/', isAuth, getExpensesByPage);
-router.post('/add', isAuth, expenseValidationRules, handleValidationErrors,  createNewExpenses);
+router.post('/add', isAuth, expenseValidationRules, handleValidationErrors, createNewExpenses);
 router.delete('/delete/:expenseId', isAuth, deleteExpenses);
 router.get('/edit/:expenseId', isAuth, getExpenses);
 router.patch('/edit/:expenseId', isAuth, expenseValidationRules, handleValidationErrors, editExpenses);

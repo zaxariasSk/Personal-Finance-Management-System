@@ -1,5 +1,8 @@
 const {InternalServerError} = require("../errors/index");
 const Expenses = require("../model/expensesModel");
+const { Op } = require('sequelize');
+const sequelize = require("../config/database");
+const Budget = require("../model/budgetModel");
 
 exports.getExpensesData = async (userId) => {
     try {
@@ -143,10 +146,54 @@ exports.getExpensesById = async (userId, expensesId) => {
 
         return editedEntry;
     } catch (e) {
-        throw new InternalServerError("Something went wrong with the server. We are working on it to resolve your problem.")
+        throw new InternalServerError("Something went wrong with the server. We are working on it to resolve your problem.");
     }
 }
 
-exports.getExpensesDataByDate = async (userId, date) => {
+// exports.getExpensesDataByDate = async (userId, date, category) => {
+//     try {
+//         const expenses = await Expenses.findAll({
+//             where: {
+//                 userId,
+//                 [Op.and]: [
+//                     sequelize.where(sequelize.fn('YEAR', sequelize.col('date')), year),
+//                     sequelize.where(sequelize.fn('MONTH', sequelize.col('date')), month)
+//                 ],
+//                 category
+//             },
+//             attributes: {
+//                 exclude: ["userId", "createdAt", "updatedAt"]
+//             }
+//         });
+//
+//         return expenses;
+//     } catch (e) {
+//         throw new InternalServerError("Something went wrong with the server. We are working on it to resolve your problem.");
+//     }
+// };
+exports.getExpensesDataByDate = async (userId, budgetId) => {
+    try {
+        // Fetch the budget and its related expenses in a single query
+        const budgetData = await Budget.findAll({
+            where: {
+                id: budgetId,
+                userId,
+            },
+            include: [
+                {
+                    model: Expenses,
+                    where: {
+                        userId,
+                        category: sequelize.col('Budget.category'), // Match category dynamically
+                    },
+                    attributes: {exclude: ['userId', 'createdAt', 'updatedAt']}, // Exclude unnecessary fields
+                },
+            ],
+            attributes: ['id', 'month', 'year', 'category'], // Include relevant budget details
+        });
 
-}
+        return budgetData;
+    } catch (e) {
+        throw new InternalServerError("Something went wrong with the server. We are working on it to resolve your problem.");
+    }
+};

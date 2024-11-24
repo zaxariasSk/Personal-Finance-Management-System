@@ -3,23 +3,27 @@ const Session = require('../model/sessionModel');
 const User = require('../model/userModel');
 
 async function createSession(userId, userAgent) {
-    const sessionExists = await Session.findOne({
-        where: {
-            userId,
-            userAgent: userAgent,
+    try {
+        const sessionExists = await Session.findOne({
+            where: {
+                userId,
+                userAgent: userAgent,
+            }
+        })
+
+        if (sessionExists) {
+            return sessionExists.toJSON();
         }
-    })
 
-    if (sessionExists) {
-        return sessionExists.toJSON();
+        const session = await Session.create({
+            userId: userId,
+            userAgent
+        });
+
+        return session.toJSON();
+    } catch (e) {
+        console.log(e);
     }
-
-    const session = await Session.create({
-        userId: userId,
-        userAgent
-    });
-
-    return session.toJSON();
 }
 
 const getSessionId = asyncHandler(async (googleId, userAgent) => {
