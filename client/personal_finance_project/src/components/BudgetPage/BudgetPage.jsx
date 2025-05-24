@@ -1,7 +1,6 @@
 import BudgetList from "../dataComponents/budget/BudgetList";
-import {queryClient} from "../../utils/queryClient";
 import {Outlet, redirect, useLoaderData, useNavigate} from "react-router-dom";
-import {addNewBudget, fetchBudgetListDataByPage, fetchBudgetData} from "../../api/budgetApi";
+import {addNewBudget, fetchBudgetData, fetchBudgetListDataByPage} from "../../api/budgetApi";
 import {useEffect, useState} from "react";
 import AddBudgetElement from "./AddBudgetElement";
 import Button from "../UI/Button";
@@ -12,6 +11,7 @@ import {useDispatch} from "react-redux";
 import ExpensesList from "../dataComponents/budget/ExpensesList";
 import styles from "./BudgetPage.module.css";
 import {useAutoPageAdjustment} from "../../utils/hooks/useAutoPageAdjustment";
+import {queryClient} from "../../utils/queryClient";
 
 const BudgetPage = () => {
     const dispatch = useDispatch();
@@ -25,24 +25,29 @@ const BudgetPage = () => {
         return firstBudget ? firstBudget.id : 0;
     });
 
-    const {data, isFetching } = useQuery({
+    const {
+        data,
+        isFetching
+    } = useQuery({
         queryKey: ["budget", page],
         queryFn: async ({signal}) => await fetchBudgetListDataByPage(page, {signal}),
         staleTime: 10000,
         placeholderData: keepPreviousData
     });
-    console.log(data);
-    //problhma den fortwnei
+
     useAutoPageAdjustment({
         data,
         isFetching,
         currentPage: page,
         setPage,
-        itemsKey: "budget",
+        itemsKey: "budgetDataList",
     });
 
-    const {data: budgetData} = useQuery({
-        queryKey: ["budget", budgetId, expensesPage],
+    const {
+        data: budgetData,
+        isFetching: isBudgetDataFetching
+    } = useQuery({
+        queryKey: ["budgetExpenses", budgetId, expensesPage],
         queryFn: async ({signal}) => await fetchBudgetData(budgetId, expensesPage, {signal}),
         staleTime: 1000,
         placeholderData: keepPreviousData,
@@ -82,7 +87,6 @@ const BudgetPage = () => {
             if (data?.statusCode === 401) {
                 navigate('/auth');
             } else {
-                console.log("entered")
                 dispatch(errorActions.setError({message: data.message}));
             }
         }
@@ -105,7 +109,8 @@ const BudgetPage = () => {
 
                 {addBudget && <AddBudgetElement
                     isOpen={addBudget}
-                    closeFn={closeAddBudget} />}
+                    closeFn={closeAddBudget}
+                />}
 
                 {/* Budget List */}
                 <div className={styles['budgetData-budgetList-container']}>
@@ -113,7 +118,8 @@ const BudgetPage = () => {
                         <div>
                             <BudgetList
                                 getBudgetId={budgetIdHandler}
-                                budgetDataList={data.budgetDataList} />
+                                budgetDataList={data.budgetDataList}
+                            />
                         </div>
                         <div>
                             {data?.totalPages > 1 && <PaginationComponent
@@ -132,6 +138,8 @@ const BudgetPage = () => {
                         goToNextExpensesPage={goToNextExpensesPage}
                         goToPreviousExpensesPage={goToPreviousExpensesPage}
                         totalPages={budgetData.totalPages}
+                        isBudgetDataFetching={isBudgetDataFetching}
+                        setExpensesPage={setExpensesPage}
                     />
                 </div>
             </section>
@@ -160,7 +168,7 @@ export async function loader() {
     }
 
     const budgetData = await queryClient.fetchQuery({
-        queryKey: ["budget", budgetList?.budgetDataList[0].id, 1],
+        queryKey: ["budgetExpenses", budgetList?.budgetDataList[0].id, 1],
         queryFn: async ({signal}) => await fetchBudgetData(budgetList?.budgetDataList[0].id, 1, {signal})
     });
 

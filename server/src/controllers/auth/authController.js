@@ -54,7 +54,7 @@ exports.googleOAuthHandler = asyncHandler(async (req, res) => {
     });
 
     const session = await createSession(user.id, req.get('user-agent') || '');
-
+    console.log(session)
     const accessToken = signJwt({
         ...user.toJSON(),
         session: session.id

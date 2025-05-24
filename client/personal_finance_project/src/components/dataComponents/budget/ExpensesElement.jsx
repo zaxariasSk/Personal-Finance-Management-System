@@ -30,7 +30,7 @@ const ExpensesElement = ({
             if (e?.statusCode === 401) {
                 navigate('/auth');
             }
-            await queryClient.invalidateQueries({queryKey: ["budget", budgetId]});
+            await queryClient.invalidateQueries({queryKey: ["budgetExpenses", budgetId]});
         },
         onError: error => {
             dispatch(errorActions.setError({message: error.message}));

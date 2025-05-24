@@ -86,6 +86,11 @@ export async function action({
     const budgetId = params.id;
     const formData = await request.formData();
     const entryData = Object.fromEntries(formData);
+    console.log(entryData);
+    // confirm date data update month and year properly
+    const date = new Date(entryData.date);
+    entryData.month = (date.getMonth() + 1).toString().padStart(2, '0');
+    entryData.year = date.getFullYear().toString().padStart(4, '0');
 
     const res = await editEntry(budgetId, "budget", entryData);
     await queryClient.invalidateQueries({queryKey: ["budget", {id: budgetId}]});

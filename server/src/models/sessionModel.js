@@ -11,11 +11,12 @@ const Session = sequelize.define('Session', {
     },
     userId: {
         type: DataTypes.UUID,
+        unique: false,
+        allowNull: false,
         references: {
             model: User,
             key: 'id'
         },
-        allowNull: false
     },
     valid: {
         type: DataTypes.BOOLEAN,

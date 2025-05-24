@@ -7,6 +7,7 @@ export const useAutoPageAdjustment = ({
                                           setPage,
                                           itemsKey,
                                       }) => {
+
     useEffect(() => {
         if (!isFetching && data) {
             const items = data[itemsKey] || [];

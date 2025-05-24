@@ -9,7 +9,7 @@ async function createSession(userId, userAgent) {
                 userId,
                 userAgent: userAgent,
             }
-        })
+        });
 
         if (sessionExists) {
             return sessionExists.toJSON();
@@ -19,10 +19,9 @@ async function createSession(userId, userAgent) {
             userId: userId,
             userAgent
         });
-
         return session.toJSON();
     } catch (e) {
-        console.log(e);
+        console.log(e)
     }
 }
 
