@@ -1,3 +1,20 @@
+const checkError = async (res) => {
+    if (res.status === 401) {
+        return {
+            hasError: true,
+            error: "No token provided",
+            statusCode: 401
+        };
+    } else {
+        const error = await res.json();
+        return {
+            hasError: true,
+            message: error?.message,
+            statusCode: error.statusCode || 404
+        };
+    }
+}
+
 export const fetchEntryDataByPage = async (page, entryType, {signal}) => {
     try {
         const res = await fetch(`http://localhost:3000/${entryType}?page=${page}`, {
@@ -6,19 +23,7 @@ export const fetchEntryDataByPage = async (page, entryType, {signal}) => {
         });
 
         if (!res.ok) {
-            if (res.status === 401) {
-                return {
-                    hasError: true,
-                    error: "No token provided",
-                    statusCode: 401
-                };
-            } else {
-                const error = await res.json();
-                return {
-                    hasError: true,
-                    error: error?.message
-                }; // Return a custom error object or message
-            }
+            return await checkError(res);
         }
 
         return await res.json(); // Return the valid data
@@ -41,7 +46,11 @@ export const addNewEntry = async (data, entryType) => {
             },
             body: JSON.stringify(data)
         });
-        
+
+        if (!res.ok) {
+            return await checkError(res);
+        }
+
         return await res.json();
     } catch (err) {
         return {
@@ -63,36 +72,36 @@ export const deleteEntry = async (entryId, entryType, {signal}) => {
         });
 
         if (!res.ok) {
-            if (res.status === 401) {
-                return {
-                    hasError: true,
-                    error: "No token provided",
-                    statusCode: 401
-                };
-            } else {
-                const error = await res.json();
-                throw new Error(error.message || "This entry could not be deleted. Please try again later");
-            }
+            return await checkError(res);
         }
     } catch (e) {
         console.log(e.message)
-        throw new Error(e.message || "This entry could not be deleted. Please try again later")
+        return {
+            hasError: true,
+            error: "A network error occurred"
+        };
     }
 }
 
 export const getEntryById = async (entryId, entryType, {signal}) => {
-    const res = await fetch(`http://localhost:3000/${entryType}/edit/${entryId}`, {
-        credentials: "include",
-        signal
-    });
+    try {
+        const res = await fetch(`http://localhost:3000/${entryType}/edit/${entryId}`, {
+            credentials: "include",
+            signal
+        });
 
-    if (!res.ok) {
-        // Handle errors here, throw an error or return an object with the error
-        throw new Error(`Error fetching entry: ${res.status}`);
+        if (!res.ok) {
+            return await checkError(res);
+        }
+
+        // Parse and return the JSON data
+        return await res.json();
+    } catch (e) {
+        return {
+            hasError: true,
+            error: "A network error occurred"
+        };
     }
-
-    // Parse and return the JSON data
-    return await res.json();
 };
 
 
@@ -106,6 +115,10 @@ export const editEntry = async (entryId, entryType, data) => {
             },
             body: JSON.stringify(data)
         });
+
+        if (!res.ok) {
+            return await checkError(res);
+        }
 
         return await res.json();
     } catch (e) {

@@ -1,5 +1,5 @@
 const {InternalServerError} = require("../errors/index");
-const Income = require("../model/incomeModel");
+const Income = require("../models/incomeModel");
 
 exports.getIncomeData = async (userId) => {
     try {

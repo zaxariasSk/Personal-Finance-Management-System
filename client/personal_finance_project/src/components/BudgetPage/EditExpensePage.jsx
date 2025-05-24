@@ -1,34 +1,31 @@
-import {queryClient} from "../../../utils/queryClient";
-import {editEntry, getEntryById} from "../../../api/entryApi";
-import {redirect, useActionData, useNavigate, useParams} from "react-router-dom";
-import {useQuery} from "@tanstack/react-query";
-import SamePageFormComponent from "../../FormComponent/SamePageFormComponent";
-import Modal from "../../UI/Modal";
+import {editBudgetExpense} from "../../api/budgetApi";
+import Modal from "../UI/Modal";
+import CardComponent from "../UI/CardComponent";
+import SamePageFormComponent from "../FormComponent/SamePageFormComponent";
 import {useEffect, useState} from "react";
-import CardComponent from "../../UI/CardComponent";
+import {redirect, useNavigate, useParams} from "react-router-dom";
+import {errorActions} from "../../redux/slices/errorSlice";
 import {useDispatch} from "react-redux";
-import {errorActions} from "../../../redux/slices/errorSlice";
+import {queryClient} from "../../utils/queryClient";
+import {useQuery} from "@tanstack/react-query";
+import {editEntry} from "../../api/entryApi";
 
-const EditEntryPage = () => {
-    const {id: entryId, type: entryType} = useParams();
-    const dispatch = useDispatch();
-
+const EditExpensePage = () => {
+    const {id: expenseId} = useParams();
     const [isOpen, setIsOpen] = useState(true);
     const navigate = useNavigate();
-    const actionData = useActionData();
+    const dispatch = useDispatch();
 
     const closeModal = () => {
-        if (!actionData) {
-            setIsOpen(false);
-            navigate(`/entry/${entryType}`);
-        }
+        setIsOpen(false);
+        navigate(`/budget`);
     }
 
     const {data} = useQuery({
-        queryKey: [entryType, {id: entryId}],
-        queryFn: ({signal}) => getEntryById(entryId, entryType, {signal}),
+        queryKey: ["expense", expenseId],
+        queryFn: ({signal}) => editBudgetExpense(expenseId, {signal}),
         staleTime: 10000
-    });
+    })
 
     useEffect(() => {
         if (data?.statusCode) {
@@ -36,15 +33,14 @@ const EditEntryPage = () => {
                 navigate('/auth');
             } else {
                 dispatch(errorActions.setError({message: data.message}));
-                navigate(`/entry/${entryType}`);
+                navigate(`/budget`);
             }
         }
     }, [data, dispatch, navigate]);
 
-
     return (
         <>
-            {!data.hasError &&
+            {!data?.hasError &&
                 <Modal
                     openModal={isOpen}
                     closeModal={closeModal}
@@ -62,20 +58,13 @@ const EditEntryPage = () => {
     )
 }
 
-export default EditEntryPage;
-
 export async function loader({params}) {
-    const entryId = params.id;
-    const entryType = params?.type || "budget";
-
-    if (entryType !== "income" && entryType !== "expenses") {
-        return redirect('/dashboard');
-    }
+    const expenseId = params.id;
 
     const data = await queryClient.fetchQuery({
-        queryKey: [entryType, {id: entryId}],
-        queryFn: ({signal}) => getEntryById(entryId, entryType, {signal}),
-    });
+        queryKey: ["expense", expenseId],
+        queryFn: ({signal}) => editBudgetExpense(expenseId, {signal})
+    })
 
     if (data.hasError && data.statusCode === 401) {
         return redirect('/auth');
@@ -84,22 +73,26 @@ export async function loader({params}) {
     return data;
 }
 
+export default EditExpensePage;
+
 export async function action({
                                  params,
                                  request
                              }) {
-    const entryId = params.id;
-    const entryType = params.type;
+    const expenseId = params.id;
+    const entryType = "expenses";
 
     const formData = await request.formData();
     const entryData = Object.fromEntries(formData);
-    const res = await editEntry(entryId, entryType, entryData);
-    await queryClient.invalidateQueries({queryKey: [entryType]});
+    const res = await editEntry(expenseId, entryType, entryData);
 
     if (res.statusCode === 401) {
         return redirect('/auth');
     } else if (res.statusCode) {
         return res;
     }
-    return redirect(`/entry/${entryType}`);
+
+    await queryClient.invalidateQueries({queryKey: ["budget"]});
+
+    return redirect(`/budget`);
 }

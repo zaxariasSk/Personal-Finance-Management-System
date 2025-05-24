@@ -9,12 +9,12 @@ import {useDispatch} from "react-redux";
 import {queryClient} from "../../utils/queryClient";
 import {Outlet, redirect, useLoaderData, useNavigate, useParams} from "react-router-dom";
 import FinanceEntryComponent from "../dataComponents/financeEntry/FinanceEntryComponent";
+import PaginationComponent from "../UI/PaginationComponent";
 
 const EntryPage = () => {
     const {type: entryType} = useParams();
     const navigate = useNavigate();
     const loaderData = useLoaderData();
-
     const dispatch = useDispatch();
     const [addEntryPage, setAddEntryPage] = useState(false);
 
@@ -29,7 +29,7 @@ const EntryPage = () => {
         placeholderData: keepPreviousData
     });
 
-    if(data?.data?.length < 0) {
+    if (data?.data?.length < 0) {
         setCurrentPage(prevState => prevState - 1);
     }
 
@@ -40,6 +40,14 @@ const EntryPage = () => {
     const handleClose = () => {
         setAddEntryPage(false);
     }
+
+    const goToNextPage = () => {
+        setCurrentPage(prevPage => Math.min(prevPage + 1, data?.totalPages));
+    };
+
+    const goToPreviousPage = () => {
+        setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
+    };
 
     useEffect(() => {
         if (loaderData.hasError) {
@@ -86,23 +94,11 @@ const EntryPage = () => {
             <Outlet />
 
             {/* Component for pagination */}
-            {data?.totalPages > 1 &&
-                <div>
-                    <button
-                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                        disabled={currentPage === 1}
-                    >
-                        Previous
-                    </button>
-                    <span>{currentPage} of {data?.totalPages}</span>
-                    <button
-                        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, data?.totalPages))}
-                        disabled={currentPage === data?.totalPages}
-                    >
-                        Next
-                    </button>
-                </div>
-            }
+            {data?.totalPages > 1 && <PaginationComponent
+                data={data}
+                currentPage={currentPage}
+                goToNextPage={goToNextPage}
+                goToPreviousPage={goToPreviousPage} />}
         </>
     )
 }
@@ -128,7 +124,10 @@ export async function loader({params}) {
     return data;
 }
 
-export async function action({request, params}) {
+export async function action({
+                                 request,
+                                 params
+                             }) {
     const entryType = params.type;
     const formData = await request.formData();
     const entryData = Object.fromEntries(formData);

@@ -158,7 +158,7 @@ const SamePageFormComponent = (props) => {
             <Button
                 type="submit"
                 disabled={fetcher.state === "submitting"}>
-                {fetcher.state === "submitting" ? "loading" : "Add new income"}
+                {fetcher.state === "submitting" ? "loading" : "Submit"}
             </Button>
         </fetcher.Form>
     )

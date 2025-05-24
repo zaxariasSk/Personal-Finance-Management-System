@@ -12,6 +12,7 @@ const responseErrorHandler = async (res) => {
         return {
             hasError: true,
             message: error.message || "Something went wrong",
+            statusCode: error.statusCode || ""
         }
     }
 }
@@ -64,16 +65,16 @@ export const addNewBudget = async (data) => {
     }
 }
 
-export const fetchBudgetData = async (id, {signal}) => {
+export const fetchBudgetData = async (id, page, {signal}) => {
     try {
-        const res = await fetch(`http://localhost:3000/budget/${id}`, {
+        const res = await fetch(`http://localhost:3000/budget/expenses/${id}?page=${page}`, {
             credentials: "include",
             signal
         });
 
         const error = await responseErrorHandler(res);
 
-        if(error?.hasError) {
+        if (error?.hasError) {
             return error;
         }
 
@@ -85,3 +86,72 @@ export const fetchBudgetData = async (id, {signal}) => {
         }
     }
 }
+
+export const fetchBudget = async (id, {signal}) => {
+    try {
+        const res = await fetch(`http://localhost:3000/budget/${id}`, {
+            credentials: "include",
+            signal
+        });
+
+        const error = await responseErrorHandler(res);
+
+        if (error?.hasError) {
+            return error;
+        }
+
+        return await res.json();
+    } catch (e) {
+        return {
+            hasError: true,
+            error: "A network error occurred"
+        }
+    }
+}
+
+export const deleteBudget = async ({id, signal}) => {
+    try {
+        const res = await fetch(`http://localhost:3000/budget/delete/${id}`, {
+            method: "DELETE",
+            credentials: "include",
+            signal
+        });
+
+        const error = await responseErrorHandler(res);
+
+        if (error?.hasError) {
+            return error;
+        }
+
+        return await res.json();
+    } catch (e) {
+        return {
+            hasError: true,
+            error: "A network error occurred"
+        }
+    }
+
+}
+
+export const editBudgetExpense = async (expenseId, {signal}) => {
+    try {
+        const res = await fetch(`http://localhost:3000/budget/expenses/edit/${expenseId}`, {
+            credentials: "include",
+            signal
+        });
+
+        const error = await responseErrorHandler(res);
+
+        if (error?.hasError) {
+            return error;
+        }
+
+        return await res.json();
+
+    } catch (e) {
+        return {
+            hasError: true,
+            error: "A network error occurred"
+        }
+    }
+};

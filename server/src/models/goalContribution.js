@@ -1,5 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const User = require("./userModel");
+const Goal = require("./goalModel");
 
 const GoalContribution = sequelize.define('GoalContribution', {
     id: {
@@ -26,11 +28,5 @@ const GoalContribution = sequelize.define('GoalContribution', {
         allowNull: false,
     }
 });
-
-User.hasMany(GoalContribution, { foreignKey: 'userId' });
-GoalContribution.belongsTo(User, { foreignKey: 'userId' });
-
-Goal.hasMany(GoalContribution, { foreignKey: 'goalId' });
-GoalContribution.belongsTo(Goal, { foreignKey: 'goalId' });
 
 module.exports = GoalContribution;

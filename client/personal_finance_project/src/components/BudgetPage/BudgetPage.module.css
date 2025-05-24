@@ -1,0 +1,8 @@
+.budgetData-budgetList-container {
+    display: flex;
+    justify-content: center;
+}
+
+.budgetData-budgetList-container > * {
+    flex-basis: 50%;
+}

@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
-const Session = require('../model/sessionModel');
-const User = require('../model/userModel');
+const Session = require('../models/sessionModel');
+const User = require('../models/userModel');
 
 async function createSession(userId, userAgent) {
     try {

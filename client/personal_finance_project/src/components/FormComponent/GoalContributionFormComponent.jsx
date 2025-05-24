@@ -1,23 +1,17 @@
 import {useFetcher} from "react-router-dom";
 import styles from "./Form.module.css";
 import {useFormik} from "formik";
-import {string, date, object, mixed} from "yup";
+import {string, date, object} from "yup";
 import Button from "../UI/Button";
 import {useEffect} from "react";
 import useHandleErrorOrNavigate from "../../utils/error/handleErrorOrNavigate";
 
-const categories = ["Beauty", "Bills & Fees", "Car", "Education", "Entertainment", "Family", "Food & Drink", "Groceries", "Healthcare", "Home", "Shopping", "Sports", "Hobbies", "Travel", "Transport", "Work", "Other"];
-
 let initialValues = {
-    category: "",
     amount: "",
     date: ""
 }
 
 const yupSchema = object({
-    category: mixed()
-        .oneOf(categories)
-        .required("Category is required"),
     amount: string()
         .test(
             'is-decimal',
@@ -29,14 +23,12 @@ const yupSchema = object({
     date: date()
         .required("Date is required"),
 })
+const GoalContributionFormComponent = (props) => {
 
-const BudgetFormComponent = (props) => {
     if (props.initialData && Object.keys(props.initialData).length > 0) {
         initialValues = props.initialData;
-        initialValues.date = `${props.initialData.year}-${props.initialData.month}`;
     } else {
         initialValues = {
-            category: "",
             amount: "",
             date: ""
         }
@@ -66,34 +58,9 @@ const BudgetFormComponent = (props) => {
         <fetcher.Form
             className={styles.form}
             autoFocus={false}
-            method={props.method}
+            method={props.method || "GET"}
             onSubmit={formik.handleSubmit}
             noValidate={true}>
-
-            <div>
-                <label htmlFor="category">Category</label>
-                <select
-                    name="category"
-                    id="category"
-                    value={formik.values.category}
-                    onChange={async (e) => {
-                        await formik.setFieldValue('category', e.target.value, true);
-                    }}
-                    onBlur={(e) => formik.setFieldValue('category', e.target.value, true)}
-                    className={formik.touched.category && formik.errors.category ? styles.invalid : styles.submit_select}>
-                    <option value="">Select a category</option>
-                    {categories.map((categoryValue) => (
-                        <option
-                            key={categoryValue}
-                            value={categoryValue}>
-                            {categoryValue}
-                        </option>
-                    ))}
-                </select>
-                {formik.touched.category && formik.errors.category ? (
-                    <div className={styles.errorMessage}>{formik.errors.category}</div>
-                ) : null}
-            </div>
 
             <div>
                 <label htmlFor="amount">Amount</label>
@@ -117,7 +84,7 @@ const BudgetFormComponent = (props) => {
             <div>
                 <label htmlFor="date">Date</label>
                 <input
-                    type="month"
+                    type="date"
                     name="date"
                     id="date"
                     value={formik.values.date}
@@ -135,11 +102,11 @@ const BudgetFormComponent = (props) => {
             <Button
                 type="submit"
                 disabled={fetcher.state === "submitting"}>
-                {fetcher.state === "submitting" ? "loading" : "Add new budget"}
+                {fetcher.state === "submitting" ? "loading" : "Save"}
             </Button>
 
         </fetcher.Form>
     );
 }
 
-export default BudgetFormComponent;
+export default GoalContributionFormComponent;

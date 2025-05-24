@@ -1,8 +1,7 @@
 const {InternalServerError} = require("../errors/index");
-const Expenses = require("../model/expensesModel");
-const { Op } = require('sequelize');
+const Expenses = require("../models/expensesModel");
+const {Op} = require('sequelize');
 const sequelize = require("../config/database");
-const Budget = require("../model/budgetModel");
 
 exports.getExpensesData = async (userId) => {
     try {
@@ -102,7 +101,6 @@ exports.deleteExpensesById = async (userId, id) => {
 
 exports.editExpensesById = async (userId, expensesId, data) => {
     try {
-        console.log("data: " + JSON.stringify(data))
         const editedEntry = await Expenses.update(
             data,
             {
@@ -150,49 +148,41 @@ exports.getExpensesById = async (userId, expensesId) => {
     }
 }
 
-// exports.getExpensesDataByDate = async (userId, date, category) => {
-//     try {
-//         const expenses = await Expenses.findAll({
-//             where: {
-//                 userId,
-//                 [Op.and]: [
-//                     sequelize.where(sequelize.fn('YEAR', sequelize.col('date')), year),
-//                     sequelize.where(sequelize.fn('MONTH', sequelize.col('date')), month)
-//                 ],
-//                 category
-//             },
-//             attributes: {
-//                 exclude: ["userId", "createdAt", "updatedAt"]
-//             }
-//         });
-//
-//         return expenses;
-//     } catch (e) {
-//         throw new InternalServerError("Something went wrong with the server. We are working on it to resolve your problem.");
-//     }
-// };
-exports.getExpensesDataByDate = async (userId, budgetId) => {
+exports.getExpensesDataByDate = async (userId, date, category, {page, limit}) => {
+    const { month, year } = date;
+
     try {
-        // Fetch the budget and its related expenses in a single query
-        const budgetData = await Budget.findAll({
+        const {
+            count,
+            rows
+        } = await Expenses.findAndCountAll({
             where: {
-                id: budgetId,
                 userId,
+                [Op.and]: [
+                    sequelize.where(sequelize.fn('YEAR', sequelize.col('date')), year),
+                    sequelize.where(sequelize.fn('MONTH', sequelize.col('date')), month)
+                ],
+                category
             },
-            include: [
-                {
-                    model: Expenses,
-                    where: {
-                        userId,
-                        category: sequelize.col('Budget.category'), // Match category dynamically
-                    },
-                    attributes: {exclude: ['userId', 'createdAt', 'updatedAt']}, // Exclude unnecessary fields
-                },
-            ],
-            attributes: ['id', 'month', 'year', 'category'], // Include relevant budget details
+            limit,
+            offset: (page - 1) * limit,
+            attributes: {
+                exclude: ["userId", "createdAt", "updatedAt"]
+            }
         });
 
-        return budgetData;
+        if (!count && !rows) {
+            return {
+                hasError: true,
+                message: "No budget data found"
+            };
+        }
+
+        return {
+            rows,
+            count
+        }
+
     } catch (e) {
         throw new InternalServerError("Something went wrong with the server. We are working on it to resolve your problem.");
     }

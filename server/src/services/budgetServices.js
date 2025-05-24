@@ -1,4 +1,4 @@
-const Budget = require("../model/budgetModel");
+const Budget = require("../models/budgetModel");
 const {InternalServerError} = require("../errors/index");
 
 exports.getBudgetListDataByPage = async (userId, page, limit) => {
@@ -46,7 +46,7 @@ exports.addNewBudget = async (userId, data) => {
             }
         })
 
-        if(budgetExists) {
+        if (budgetExists) {
             return {
                 hasError: true,
                 message: "This budget already exists."
@@ -125,7 +125,7 @@ exports.deleteBudgetById = async (budgetId, userId) => {
         const res = await Budget.destroy({
             where: {
                 userId,
-                budgetId
+                id: budgetId
             }
         });
 
@@ -137,6 +137,30 @@ exports.deleteBudgetById = async (budgetId, userId) => {
         }
 
         return res;
+    } catch (e) {
+        throw new InternalServerError("Something went wrong with the server. We are working on it to resolve your problem.")
+    }
+}
+
+exports.editBudgetById = async (userId, budgetId, data) => {
+    try {
+        const editedBudget = await Budget.update(
+            data,
+            {
+                where: {
+                    id: budgetId,
+                    userId
+                }
+            });
+
+        if(editedBudget[0] <= 0) {
+            return {
+                hasError: true,
+                message: "Failed to edit this budget entry"
+            }
+        }
+
+        return editedBudget;
     } catch (e) {
         throw new InternalServerError("Something went wrong with the server. We are working on it to resolve your problem.")
     }

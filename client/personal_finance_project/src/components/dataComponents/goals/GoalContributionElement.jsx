@@ -1,32 +1,28 @@
-import styles from "./FinanceElement.module.css";
-import {Link, useLocation, useNavigate} from "react-router-dom";
+import styles from "../financeEntry/FinanceElement.module.css";
+import {Link, useNavigate} from "react-router-dom";
 import Button from "../../UI/Button";
 import {useMutation} from "@tanstack/react-query";
-import {deleteEntry} from "../../../api/entryApi";
+import {deleteGoalContribution} from "../../../api/goalsApi";
 import {queryClient} from "../../../utils/queryClient";
-import {useDispatch} from "react-redux";
 import {errorActions} from "../../../redux/slices/errorSlice";
+import {useDispatch} from "react-redux";
 
-const FinanceElement = ({
-                            id,
-                            source,
-                            amount,
-                            date,
-                            description
-                        }) => {
-    const location = useLocation();
-    const entryType = location.pathname.split('/').at(-1) === "income" ? "income" : "expenses";
-
+const GoalContributionElement = ({
+                                     id,
+                                     amount,
+                                     date,
+                                     goalId
+                                 }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const {mutate} = useMutation({
-        mutationFn: ({id,entryType,signal}) => deleteEntry(id, entryType, {signal}),
+        mutationFn: (id) => deleteGoalContribution(id),
         onSuccess: async (e) => {
             if (e?.statusCode === 401) {
                 navigate('/auth');
             }
-            await queryClient.invalidateQueries({queryKey: [entryType]});
+            await queryClient.invalidateQueries({queryKey: ["goalsContributions", goalId]});
         },
         onError: error => {
             dispatch(errorActions.setError({message: error.message}));
@@ -34,24 +30,15 @@ const FinanceElement = ({
     });
 
     const deleteEntryHandler = () => {
-        const controller = new AbortController();
-        const signal = controller.signal;
-
-        mutate({
-            id,
-            entryType,
-            signal
-        });
-    };
+        mutate(id);
+    }
 
     return (
         <tr className={styles.table_row}>
-            <td>{source}</td>
             <td>{amount}</td>
             <td>{new Date(date).toLocaleDateString()}</td>
-            <td>{description || ""}</td>
             <td>
-                <Link to={`edit/${id}`}>
+                <Link to={`contribution/edit/${id}`}>
                     <img
                         src={'/images/edit.svg'}
                         alt="edit"
@@ -73,7 +60,7 @@ const FinanceElement = ({
                 </Button>
             </td>
         </tr>
-    )
+    );
 }
 
-export default FinanceElement;
+export default GoalContributionElement;

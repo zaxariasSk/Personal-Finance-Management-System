@@ -1,8 +1,10 @@
-const User = require('../model/userModel');
-const Session = require('../model/sessionModel');
-const Income = require('../model/incomeModel');
-const Expense = require('../model/expensesModel');
-const Budget = require('../model/budgetModel');
+const User = require('../models/userModel');
+const Session = require('../models/sessionModel');
+const Income = require('../models/incomeModel');
+const Expense = require('../models/expensesModel');
+const Budget = require('../models/budgetModel');
+const Goal = require("../models/goalModel");
+const GoalContribution = require("../models/goalContribution");
 
 User.hasMany(Session, {foreignKey: 'userId'});
 Session.belongsTo(User, {
@@ -36,19 +38,27 @@ Budget.belongsTo(User, {
     onUpdate: 'CASCADE'
 });
 
-// Many-to-Many relationship between Budget and Expense
-Budget.belongsToMany(Expense, {
-    through: 'BudgetExpense', // Name of the junction table
-    foreignKey: 'budgetId', // Foreign key in BudgetExpense pointing to Budget
-    otherKey: 'expenseId', // Foreign key in BudgetExpense pointing to Expense
-    onDelete: 'CASCADE', // Optional: specify behavior when a budget is deleted
-    onUpdate: 'CASCADE',
+User.hasMany(Goal, {foreignKey: 'userId'});
+Goal.belongsTo(User, {
+    foreignKey: 'userId',
+    constraints: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
 });
 
-Expense.belongsToMany(Budget, {
-    through: 'BudgetExpense', // Name of the junction table
-    foreignKey: 'expenseId', // Foreign key in BudgetExpense pointing to Expense
-    otherKey: 'budgetId', // Foreign key in BudgetExpense pointing to Budget
-    onDelete: 'CASCADE', // Optional: specify behavior when an expense is deleted
-    onUpdate: 'CASCADE',
+
+User.hasMany(GoalContribution, {foreignKey: 'userId'});
+GoalContribution.belongsTo(User, {
+    foreignKey: 'userId',
+    constraints: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+});
+
+Goal.hasMany(GoalContribution, {foreignKey: 'goalId'});
+GoalContribution.belongsTo(Goal, {
+    foreignKey: 'goalId',
+    constraints: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
 });

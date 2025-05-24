@@ -1,30 +1,29 @@
 import CardComponent from "../../UI/CardComponent";
-import styles from "./BudgetElement.module.css";
+import {Link, useNavigate} from "react-router-dom";
 import Button from "../../UI/Button";
-import {Link, Outlet, useNavigate} from "react-router-dom";
 import {useMutation} from "@tanstack/react-query";
+import {deleteGoal} from "../../../api/goalsApi";
 import {queryClient} from "../../../utils/queryClient";
-import {errorActions} from "../../../redux/slices/errorSlice";
 import {useDispatch} from "react-redux";
-import {deleteBudget} from "../../../api/budgetApi";
+import {errorActions} from "../../../redux/slices/errorSlice";
 
-const BudgetElement = ({
-                           category,
-                           amount,
-                           year,
-                           month,
-                           id
-                       }) => {
+const GoalElement = ({
+                         id,
+                         targetAmount,
+                         savedAmount,
+                         category
+                     }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const {mutate} = useMutation({
-        mutationFn: ({id,signal}) => deleteBudget({id,signal}),
+        mutationFn: async ({id, signal}) => await deleteGoal({id, signal}),
         onSuccess: async (res) => {
-            if (res?.statusCode === 401) {
-                navigate('/auth');
+            if(res?.statusCode === 401) {
+                navigate("/auth");
             }
-            await queryClient.invalidateQueries({queryKey: ["budget"]})
+
+            await queryClient.invalidateQueries({queryKey: ["goals"]});
         },
         onError: error => dispatch(errorActions.setError({message: error.message}))
     })
@@ -39,19 +38,13 @@ const BudgetElement = ({
     return (
         <CardComponent>
             <div>
-                <div className={styles.budget__container}>
-                    <div className="budget-element">
-                        <div className="budget-element__category">
-                            <h2>{category}</h2>
-                        </div>
-
+                <div>
+                    <div>
+                        <h2>{category}</h2>
                     </div>
-                    <div className="budget-element__date">
-                        <p>{month}/{year}</p>
-                        <div className="budget-element__amount">
-                            <p>${amount.toFixed(2)}</p>
-                        </div>
-                    </div>
+                </div>
+                <div>
+                    <p>{+savedAmount.toFixed(2)}/{+targetAmount.toFixed(2)}</p>
                 </div>
             </div>
             <div className={"edit-delete-container"}>
@@ -75,8 +68,13 @@ const BudgetElement = ({
                     />
                 </Button>
             </div>
+            <div>
+                <Link to={`contribution/${id}`}>
+                    +
+                </Link>
+            </div>
         </CardComponent>
-    );
-};
+    )
+}
 
-export default BudgetElement;
+export default GoalElement;

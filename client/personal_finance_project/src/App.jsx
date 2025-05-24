@@ -12,9 +12,19 @@ import EditEntryPage, {
     loader as editEntryLoader,
     action as editEntryAction
 } from "./components/dataComponents/financeEntry/EditEntryPage";
-import {action as addBudgetAction, loader as budgetPageLoader} from "./components/BudgetPage/BudgetElement";
+import {action as addBudgetAction, loader as budgetPageLoader} from "./components/BudgetPage/BudgetPage";
+import EditBudgetPage, {
+    loader as editBudgetLoader,
+    action as editBudgetAction
+} from "./components/BudgetPage/EditBudgetPage";
+import GoalsPage from "./components/GoalsPage/GoalsPage";
+import EditGoalPage from "./components/GoalsPage/EditGoalPage";
+import GoalContribution from "./components/dataComponents/goals/GoalContribution";
+import GoalContributionEdit, {loader} from "./components/dataComponents/goals/GoalContributionEdit";
 
-const BudgetElement = lazy(() => import('./components/BudgetPage/BudgetElement'));
+const BudgetPage = lazy(() => import('./components/BudgetPage/BudgetPage'));
+const EditExpensePage = lazy(() => import('./components/BudgetPage/EditExpensePage'));
+
 const router = createBrowserRouter([
     {
         path: '/',
@@ -46,13 +56,52 @@ const router = createBrowserRouter([
                 path: "/budget",
                 element: (
                     <Suspense>
-                        <BudgetElement />
+                        <BudgetPage />
                     </Suspense>
                 ),
                 loader: budgetPageLoader,
-                // action: ({request}) => import('./components/BudgetPage/BudgetElement').then(module => module.action({request})),
-                action: addBudgetAction
-            }]
+                // action: ({request}) => import('./components/BudgetPage/BudgetPage').then(module => module.action({request})),
+                action: addBudgetAction,
+                children: [{
+                    path: "edit/:id",
+                    element: <EditBudgetPage />,
+                    loader: editBudgetLoader,
+                    action: editBudgetAction
+                }, {
+                    path: "expenses/edit/:id",
+                    element: (
+                        <Suspense>
+                            <EditExpensePage />
+                        </Suspense>
+                    ),
+                    loader: ({params}) => import('./components/BudgetPage/EditExpensePage').then(module => module.loader({params})),
+                    action: ({params,request}) => import('./components/BudgetPage/EditExpensePage').then(module => module.action({params, request})),
+                }]
+            },
+            {
+                path: "goals",
+                element: <GoalsPage />,
+                loader: () => import('./components/GoalsPage/GoalsPage').then(module => module.loader()),
+                action: ({request}) => import('./components/GoalsPage/GoalsPage').then(module => module.action({request})),
+                children: [{
+                    path: "edit/:id",
+                    element: <EditGoalPage />,
+                    loader: ({params}) => import("./components/GoalsPage/EditGoalPage").then(module => module.loader({params})),
+                    action: ({params, request}) => import("./components/GoalsPage/EditGoalPage").then(module => module.action({params, request}))
+                },
+                {
+                    path: "contribution/:id",
+                    element: <GoalContribution />,
+                    action: ({params, request}) => import("./components/dataComponents/goals/GoalContribution").then(module => module.action({params, request}))
+                },
+                {
+                    path: "contribution/edit/:id",
+                    element: <GoalContributionEdit />,
+                    loader: ({params}) => import("./components/dataComponents/goals/GoalContributionEdit").then(module => module.loader({params})),
+                    action: ({params, request}) => import("./components/dataComponents/goals/GoalContributionEdit").then(module => module.action({params, request}))
+                }]
+            }
+        ]
     },
     {
         path: "/auth",

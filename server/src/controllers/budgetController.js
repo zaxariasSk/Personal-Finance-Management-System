@@ -4,7 +4,8 @@ const {
     addNewBudget,
     getBudgetListDataByPage,
     getBudgetById,
-    deleteBudgetById
+    deleteBudgetById,
+    editBudgetById
 } = require("../services/budgetServices");
 const {
     UnprocessableEntityError,
@@ -32,8 +33,8 @@ const getBudgetListByPage = asyncHandler(async (req, res) => {
     res.status(StatusCodes.OK).json({
         budgetDataList: entries,
         totalItems,
+        currentPage: page,
         totalPages: Math.ceil(totalItems / limit),
-        currentPage: page
     });
 });
 
@@ -57,51 +58,91 @@ const createNewBudget = asyncHandler(async (req, res) => {
 });
 
 
-const getBudgetData = asyncHandler(async (req, res, next) => {
+const getBudget = asyncHandler(async (req, res) => {
     const userId = res.locals.user.id;
     const budgetId = req.params.id;
+    const budgetData = await getBudgetById(userId, budgetId);
 
-    // const budgetDate = await getBudgetById(userId, budgetId);
-    //
-    // if(budgetDate.hasError) {
-    //     throw new NotFoundError(budgetDate.message);
-    // }
-    //
-    // const date = {
-    //     month: budgetDate[0].dataValues.month,
-    //     year: budgetDate[0].dataValues.year
-    // };
-    // const category = budgetDate[0].dataValues.category;
-    //
-    // const budgetData = await getExpensesDataByDate(userId, date, category);
-
-    const budgetData = await getExpensesDataByDate(userId, budgetId);
-
-
-    if (!budgetData) {
-        throw new NotFoundError('Budget not found or no matching expenses found.');
+    if (budgetData.hasError || budgetData.length <= 0) {
+        throw new NotFoundError(budgetData.message);
     }
-
 
     res.status(StatusCodes.OK).json({budgetData});
 });
 
-const deleteBudgetData = async (req, res) => {
+
+const getBudgetData = asyncHandler(async (req, res, next) => {
+    const userId = res.locals.user.id;
+    const budgetId = req.params.id;
+    const page = req.query.page;
+    const limit = 5;
+
+    const budgetDate = await getBudgetById(userId, budgetId);
+
+    if (budgetDate.hasError || budgetDate.length <= 0) {
+        throw new NotFoundError(budgetDate.message);
+    }
+
+    const date = {
+        month: budgetDate[0].dataValues.month,
+        year: budgetDate[0].dataValues.year
+    };
+    const category = budgetDate[0].dataValues.category;
+
+    const budgetData = await getExpensesDataByDate(userId, date, category, {page, limit});
+
+    if (budgetData.hasError) {
+        throw new NotFoundError(budgetData.message);
+    }
+
+    const {
+        rows: entries,
+        count: totalItems
+    } = budgetData;
+
+    res.status(StatusCodes.OK).json({
+        expensesList: entries,
+        totalItems,
+        totalPages: Math.ceil(totalItems / limit),
+        currentPage: parseInt(page)
+    });
+});
+
+const deleteBudgetData = asyncHandler(async (req, res) => {
     const userId = res.locals.user.id;
     const budgetId = req.params.id;
 
     const isDeleted = await deleteBudgetById(budgetId, userId);
 
-    if(isDeleted.hasError) {
+    if (isDeleted.hasError) {
         throw new InternalServerError(isDeleted.message);
     }
 
-    res.statusCode(StatusCodes.OK).json({message: "Budget deleted successfully"})
-}
+    res.status(StatusCodes.OK).json({message: "Budget deleted successfully"});
+});
+
+const editBudget = asyncHandler(async (req, res) => {
+    const userId = res.locals.user.id;
+    const budgetId = req.params.id;
+    const data = req.body;
+
+    const editedBudget = await editBudgetById(userId, budgetId, data);
+
+    if (editedBudget.hasError) {
+        throw new NotFoundError(editedBudget.message);
+    }
+
+    res.status(StatusCodes.OK).json({
+        editedBudget,
+        message: "redirect"
+    })
+});
 
 module.exports = {
     createNewBudget,
     getBudgetListByPage,
     getBudgetData,
-    deleteBudgetData
+    getBudget,
+    deleteBudgetData,
+    editBudget
 }

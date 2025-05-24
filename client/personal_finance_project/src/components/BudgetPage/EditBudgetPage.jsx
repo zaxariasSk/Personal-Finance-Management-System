@@ -1,18 +1,18 @@
-import {queryClient} from "../../../utils/queryClient";
-import {editEntry, getEntryById} from "../../../api/entryApi";
+import {queryClient} from "../../utils/queryClient";
 import {redirect, useActionData, useNavigate, useParams} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
-import SamePageFormComponent from "../../FormComponent/SamePageFormComponent";
-import Modal from "../../UI/Modal";
-import {useEffect, useState} from "react";
-import CardComponent from "../../UI/CardComponent";
+import Modal from "../UI/Modal";
+import {memo, useEffect, useState} from "react";
+import {fetchBudget} from "../../api/budgetApi";
+import CardComponent from "../UI/CardComponent";
+import BudgetFormComponent from "../FormComponent/BudgetFormComponent";
+import {editEntry} from "../../api/entryApi";
+import {errorActions} from "../../redux/slices/errorSlice";
 import {useDispatch} from "react-redux";
-import {errorActions} from "../../../redux/slices/errorSlice";
 
-const EditEntryPage = () => {
-    const {id: entryId, type: entryType} = useParams();
+const EditBudgetPage = memo(() => {
+    const {id: budgetId} = useParams();
     const dispatch = useDispatch();
-
     const [isOpen, setIsOpen] = useState(true);
     const navigate = useNavigate();
     const actionData = useActionData();
@@ -20,13 +20,13 @@ const EditEntryPage = () => {
     const closeModal = () => {
         if (!actionData) {
             setIsOpen(false);
-            navigate(`/entry/${entryType}`);
+            navigate(`/budget`);
         }
     }
 
     const {data} = useQuery({
-        queryKey: [entryType, {id: entryId}],
-        queryFn: ({signal}) => getEntryById(entryId, entryType, {signal}),
+        queryKey: ["budget", {id: budgetId}],
+        queryFn: ({signal}) => fetchBudget(budgetId, {signal}),
         staleTime: 10000
     });
 
@@ -36,7 +36,7 @@ const EditEntryPage = () => {
                 navigate('/auth');
             } else {
                 dispatch(errorActions.setError({message: data.message}));
-                navigate(`/entry/${entryType}`);
+                navigate(`/budget`);
             }
         }
     }, [data, dispatch, navigate]);
@@ -44,37 +44,32 @@ const EditEntryPage = () => {
 
     return (
         <>
-            {!data.hasError &&
+            {!data?.hasError &&
                 <Modal
                     openModal={isOpen}
                     closeModal={closeModal}
                 >
                     <CardComponent>
-                        <SamePageFormComponent
-                            initialData={data}
+                        <BudgetFormComponent
+                            initialData={data?.budgetData[0]}
                             method={"PATCH"}>
 
-                        </SamePageFormComponent>
+                        </BudgetFormComponent>
                     </CardComponent>
                 </Modal>
             }
         </>
     )
-}
+});
 
-export default EditEntryPage;
+export default EditBudgetPage;
 
 export async function loader({params}) {
-    const entryId = params.id;
-    const entryType = params?.type || "budget";
-
-    if (entryType !== "income" && entryType !== "expenses") {
-        return redirect('/dashboard');
-    }
+    const budgetId = params.id;
 
     const data = await queryClient.fetchQuery({
-        queryKey: [entryType, {id: entryId}],
-        queryFn: ({signal}) => getEntryById(entryId, entryType, {signal}),
+        queryKey: ["budget", {id: budgetId}],
+        queryFn: ({signal}) => fetchBudget(budgetId, {signal}),
     });
 
     if (data.hasError && data.statusCode === 401) {
@@ -88,18 +83,18 @@ export async function action({
                                  params,
                                  request
                              }) {
-    const entryId = params.id;
-    const entryType = params.type;
-
+    const budgetId = params.id;
     const formData = await request.formData();
     const entryData = Object.fromEntries(formData);
-    const res = await editEntry(entryId, entryType, entryData);
-    await queryClient.invalidateQueries({queryKey: [entryType]});
+
+    const res = await editEntry(budgetId, "budget", entryData);
+    await queryClient.invalidateQueries({queryKey: ["budget", {id: budgetId}]});
 
     if (res.statusCode === 401) {
         return redirect('/auth');
     } else if (res.statusCode) {
         return res;
     }
-    return redirect(`/entry/${entryType}`);
+
+    return redirect(`/budget`);
 }

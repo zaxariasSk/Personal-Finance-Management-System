@@ -51,7 +51,19 @@ const Menu = () => {
                         end={true}>
                         <img
                             src={'/images/budget.png'}
-                            alt="expenses"
+                            alt="budget"
+                            width="30"
+                            height="30"
+                        />
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink
+                        to={'/goals'}
+                        end={true}>
+                        <img
+                            src={'/images/budget.png'}
+                            alt="goals"
                             width="30"
                             height="30"
                         />

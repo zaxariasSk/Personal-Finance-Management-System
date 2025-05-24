@@ -7,7 +7,7 @@ const {
     BadRequestError
 } = require("../errors/index");
 
-const User = require('../model/userModel');
+const User = require('../models/userModel');
 
 /**
  * Asynchronously fetches Google OAuth tokens using an authorization code.
