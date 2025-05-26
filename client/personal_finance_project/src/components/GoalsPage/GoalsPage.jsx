@@ -19,7 +19,10 @@ const GoalsPage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const {data: goalsData, isFetching: isGoalsFetching} = useQuery({
+    const {
+        data: goalsData,
+        isFetching: isGoalsFetching
+    } = useQuery({
         queryKey: ["goals", page],
         queryFn: async ({signal}) => await getAllGoals(page, {signal}),
         staleTime: 10000,
@@ -36,7 +39,10 @@ const GoalsPage = () => {
 
     const [selectedGoalId, setSelectedGoalId] = useState(goalsData.goals[0]?.id);
 
-    const {data: goalContributionsList, isFetching: isContributionsFetching} = useQuery({
+    const {
+        data: goalContributionsList,
+        isFetching: isContributionsFetching
+    } = useQuery({
         queryKey: ["goalsContributions", selectedGoalId, contributionPage],
         queryFn: async ({signal}) => await fetchGoalContributions(selectedGoalId, contributionPage, {signal}),
         staleTime: 10000,
@@ -118,7 +124,7 @@ const GoalsPage = () => {
                     isOpen={addGoal}
                     closeFn={closeAddGoal} />}
 
-                <GoalContributionList
+                {goalContributionsList && <GoalContributionList
                     goalContributionsList={goalContributionsList}
                     currentPage={goalContributionsList.currentPage}
                     setPage={setContributionPage}
@@ -126,7 +132,7 @@ const GoalsPage = () => {
                     goToNextContributionPage={goToNextContributionPage}
                     goToPreviousContributionPage={goToPreviousContributionPage}
                     totalPages={goalContributionsList.totalPages}
-                />
+                />}
             </section>
 
             <Outlet />
@@ -149,10 +155,13 @@ export async function loader() {
         return {goalsData};
     }
 
-    const goalContributions = await queryClient.fetchQuery({
-        queryKey: ["goalsContributions", goalsData.goals[0].id, page],
-        queryFn: async ({signal}) => await fetchGoalContributions(goalsData.goals[0].id, 1, {signal})
-    });
+    let goalContributions
+    if (goalsData.goals.length > 0) {
+        goalContributions = await queryClient.fetchQuery({
+            queryKey: ["goalsContributions", goalsData.goals[0].id, page],
+            queryFn: async ({signal}) => await fetchGoalContributions(goalsData.goals[0].id, 1, {signal})
+        });
+    }
 
     return {
         goalsData,

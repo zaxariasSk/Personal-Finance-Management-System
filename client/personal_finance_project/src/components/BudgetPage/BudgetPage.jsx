@@ -131,7 +131,7 @@ const BudgetPage = () => {
                         </div>
                     </div>
 
-                    <ExpensesList
+                    {budgetData && <ExpensesList
                         expensesList={budgetData}
                         budgetId={budgetId}
                         currentPage={expensesPage}
@@ -140,7 +140,7 @@ const BudgetPage = () => {
                         totalPages={budgetData.totalPages}
                         isBudgetDataFetching={isBudgetDataFetching}
                         setExpensesPage={setExpensesPage}
-                    />
+                    />}
                 </div>
             </section>
 
