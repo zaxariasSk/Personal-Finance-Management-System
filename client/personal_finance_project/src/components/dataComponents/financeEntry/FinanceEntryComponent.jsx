@@ -1,9 +1,9 @@
 import FinanceElement from "./FinanceElement";
 
-const FinanceEntryComponent = ({data}) => {
+const FinanceEntryComponent = ({data, entryType}) => {
 
     if (!data || data.length === 0) {
-        return <p>No available income data</p>;
+        return <p>No available {entryType} data</p>;
     }
 
     return (

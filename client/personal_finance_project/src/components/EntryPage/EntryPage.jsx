@@ -10,6 +10,7 @@ import {queryClient} from "../../utils/queryClient";
 import {Outlet, redirect, useLoaderData, useNavigate, useParams} from "react-router-dom";
 import FinanceEntryComponent from "../dataComponents/financeEntry/FinanceEntryComponent";
 import PaginationComponent from "../UI/PaginationComponent";
+import {useAutoPageAdjustment} from "../../utils/hooks/useAutoPageAdjustment";
 
 const EntryPage = () => {
     const {type: entryType} = useParams();
@@ -18,20 +19,22 @@ const EntryPage = () => {
     const dispatch = useDispatch();
     const [addEntryPage, setAddEntryPage] = useState(false);
 
-
-    // pagination handler
     const [currentPage, setCurrentPage] = useState(1);
 
-    const {data} = useQuery({
+    const {data, isFetching} = useQuery({
         queryKey: [entryType, currentPage],
         queryFn: ({signal}) => fetchEntryDataByPage(currentPage, entryType, {signal}),
         staleTime: 10000,
         placeholderData: keepPreviousData
     });
 
-    if (data?.data?.length < 0) {
-        setCurrentPage(prevState => prevState - 1);
-    }
+    useAutoPageAdjustment({
+        data,
+        isFetching,
+        currentPage: currentPage,
+        setPage: setCurrentPage,
+        itemsKey: "data",
+    });
 
     const addEntryHandler = () => {
         setAddEntryPage(true);
@@ -86,7 +89,7 @@ const EntryPage = () => {
                     {entryType} history
                 </h2>
                 <div>
-                    <FinanceEntryComponent data={data?.data} />
+                    <FinanceEntryComponent data={data?.data} entryType={entryType} />
                 </div>
             </CardComponent>
 
