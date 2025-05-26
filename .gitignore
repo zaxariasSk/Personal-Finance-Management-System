@@ -260,5 +260,14 @@ psd
 thumb
 sketch
 
-# End of https://www.toptal.com/developers/gitignore/api/node,react,intellij
-/server/src/certs/
+# Ignore everything in the certs folder
+/server/src/certs/*
+
+# But do NOT ignore the certs folder itself
+!/server/src/certs/
+
+# And do NOT ignore other files, just ignore ca.pem
+!/server/src/certs/    # keep the folder
+!/server/src/certs/**  # keep all subfolders (if any)
+!/server/src/certs/.gitkeep  # or whatever file you use to keep it tracked
+/server/src/certs/ca.pem  # explicitly ignore ca.pem
