@@ -19,7 +19,7 @@ const GoalContributionElement = ({
     const {mutate} = useMutation({
         mutationFn: (id) => deleteGoalContribution(id),
         onSuccess: async (e) => {
-            if (e?.statusCode === 401) {
+            if (e?.statusCode === "401") {
                 navigate('/auth');
             }
             await queryClient.invalidateQueries({queryKey: ["goalsContributions", goalId]});

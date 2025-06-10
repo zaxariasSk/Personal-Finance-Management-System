@@ -81,7 +81,7 @@ const GoalsPage = () => {
 
     useEffect(() => {
         if (goalsData?.hasError) {
-            if (goalsData.statusCode === 401) {
+            if (goalsData.statusCode === "401") {
                 navigate('/auth');
             } else {
                 dispatch(errorActions.setError({message: goalsData.message}));

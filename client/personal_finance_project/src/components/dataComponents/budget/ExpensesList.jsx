@@ -3,16 +3,33 @@ import ExpensesElement from "./ExpensesElement";
 import PaginationComponent from "../../UI/PaginationComponent";
 import {useAutoPageAdjustment} from "../../../utils/hooks/useAutoPageAdjustment";
 
-const ExpensesList = ({expensesList, budgetId, totalPages, currentPage, goToNextExpensesPage, goToPreviousExpensesPage, isBudgetDataFetching, setExpensesPage}) => {
+const ExpensesList = ({
+                          expensesList,
+                          budgetId,
+                          totalPages,
+                          currentPage,
+                          goToNextExpensesPage,
+                          goToPreviousExpensesPage,
+                          isBudgetDataFetching,
+                          setExpensesPage
+                      }) => {
     const list = expensesList.expensesList;
 
     useAutoPageAdjustment({
-        expensesList,
-        isBudgetDataFetching,
+        data: expensesList,
+        isFetching: isBudgetDataFetching,
         currentPage,
-        setExpensesPage,
+        setPage: setExpensesPage,
         itemsKey: "expensesList",
     });
+
+    if (isBudgetDataFetching) {
+        // return (
+        //     <CardComponent>
+        //         <div>No expenses found</div>
+        //     </CardComponent>
+        // );
+    }
 
     return (
         <CardComponent>

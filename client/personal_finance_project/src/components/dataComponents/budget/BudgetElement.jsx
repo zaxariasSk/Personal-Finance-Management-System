@@ -24,12 +24,13 @@ const BudgetElement = ({
             if (res?.statusCode === 401) {
                 navigate('/auth');
             }
+            await queryClient.removeQueries({queryKey: ["budgetExpenses", id], exact: false});
             await queryClient.invalidateQueries({queryKey: ["budget"]})
         },
         onError: error => dispatch(errorActions.setError({message: error.message}))
     })
 
-    const deleteBudgetHandler = () => {
+    const deleteBudgetHandler = async () => {
         const controller = new AbortController();
         const signal = controller.signal;
 

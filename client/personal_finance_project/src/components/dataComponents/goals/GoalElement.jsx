@@ -19,7 +19,7 @@ const GoalElement = ({
     const {mutate} = useMutation({
         mutationFn: async ({id, signal}) => await deleteGoal({id, signal}),
         onSuccess: async (res) => {
-            if(res?.statusCode === 401) {
+            if(res?.statusCode === "401") {
                 navigate("/auth");
             }
 

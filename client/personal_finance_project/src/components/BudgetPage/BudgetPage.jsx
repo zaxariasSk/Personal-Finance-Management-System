@@ -13,20 +13,22 @@ import styles from "./BudgetPage.module.css";
 import {useAutoPageAdjustment} from "../../utils/hooks/useAutoPageAdjustment";
 import {queryClient} from "../../utils/queryClient";
 
+//TODO: Known bug. Otan den uparxei kanena budget kai bazw ena pou exei expenses
+// kai meta to sbisw
+// ta expenses sinexizoun na emfanizontai sta deksia
+
+// An balw ena budget pou exei expenses kai meta to sbisw kai balw ena allo pou den exei
+// tote mou emfanizei gia poli ligo tou prohgoumenou ta expenses
+
 const BudgetPage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const {budgetList} = useLoaderData();
     const [addBudget, setAddBudget] = useState(false);
     const [page, setPage] = useState(1);
     const [expensesPage, setExpensesPage] = useState(1);
-    const [budgetId, setBudgetId] = useState(() => {
-        const firstBudget = budgetList?.budgetDataList?.[0];
-        return firstBudget ? firstBudget.id : 0;
-    });
 
     const {
-        data,
+        data: budgetList,
         isFetching
     } = useQuery({
         queryKey: ["budget", page],
@@ -35,8 +37,18 @@ const BudgetPage = () => {
         placeholderData: keepPreviousData
     });
 
+    const [selectedBudgetId, setSelectedBudgetId] = useState(null);
+
+    const firstBudgetId = budgetList?.budgetDataList?.[0]?.id;
+    const budgetId = firstBudgetId ?? selectedBudgetId;
+
+    // console.log("firstBudgetId");
+    // console.log(firstBudgetId);
+    // console.log("budgetId");
+    // console.log(budgetId);
+
     useAutoPageAdjustment({
-        data,
+        data: budgetList,
         isFetching,
         currentPage: page,
         setPage,
@@ -49,14 +61,14 @@ const BudgetPage = () => {
     } = useQuery({
         queryKey: ["budgetExpenses", budgetId, expensesPage],
         queryFn: async ({signal}) => await fetchBudgetData(budgetId, expensesPage, {signal}),
-        staleTime: 1000,
+        staleTime: 100,
         placeholderData: keepPreviousData,
-        enabled: data?.budgetDataList?.length > 0
+        enabled: Boolean(budgetId)
     });
 
     const budgetIdHandler = (id) => {
-        setBudgetId(id);
-    }
+        setSelectedBudgetId(id);
+    };
 
     const closeAddBudget = () => {
         setAddBudget(false);
@@ -67,7 +79,7 @@ const BudgetPage = () => {
     }
 
     const goToNextPage = () => {
-        setPage(prevPage => Math.min(prevPage + 1, data?.totalPages));
+        setPage(prevPage => Math.min(prevPage + 1, budgetList?.totalPages));
     }
 
     const goToPreviousPage = () => {
@@ -83,14 +95,15 @@ const BudgetPage = () => {
     }
 
     useEffect(() => {
-        if (data?.hasError) {
-            if (data?.statusCode === 401) {
+        console.log(budgetList)
+        if (budgetList?.hasError) {
+            if (budgetList?.statusCode === "401") {
                 navigate('/auth');
             } else {
-                dispatch(errorActions.setError({message: data.message}));
+                dispatch(errorActions.setError({message: budgetList.message}));
             }
         }
-    }, [data, dispatch, data.hasError, data.message, navigate]);
+    }, [budgetList, dispatch, budgetList.hasError, budgetList.message, navigate]);
 
     return (
         <>
@@ -118,12 +131,12 @@ const BudgetPage = () => {
                         <div>
                             <BudgetList
                                 getBudgetId={budgetIdHandler}
-                                budgetDataList={data.budgetDataList}
+                                budgetDataList={budgetList.budgetDataList}
                             />
                         </div>
                         <div>
-                            {data?.totalPages > 1 && <PaginationComponent
-                                data={data}
+                            {budgetList?.totalPages > 1 && <PaginationComponent
+                                data={budgetList}
                                 currentPage={page}
                                 goToNextPage={goToNextPage}
                                 goToPreviousPage={goToPreviousPage}
@@ -131,7 +144,7 @@ const BudgetPage = () => {
                         </div>
                     </div>
 
-                    {budgetData && <ExpensesList
+                    {(budgetList?.budgetDataList?.length > 0) && <ExpensesList
                         expensesList={budgetData}
                         budgetId={budgetId}
                         currentPage={expensesPage}

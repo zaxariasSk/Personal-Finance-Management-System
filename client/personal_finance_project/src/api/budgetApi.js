@@ -19,7 +19,6 @@ const responseErrorHandler = async (res) => {
 
 
 export const fetchBudgetListDataByPage = async (page, {signal}) => {
-    console.log(page)
     try {
         const res = await fetch(`http://localhost:3000/budget?page=${page}`, {
             credentials: "include",

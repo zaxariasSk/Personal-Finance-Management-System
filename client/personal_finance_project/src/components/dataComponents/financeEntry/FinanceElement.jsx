@@ -23,7 +23,7 @@ const FinanceElement = ({
     const {mutate} = useMutation({
         mutationFn: ({id,entryType,signal}) => deleteEntry(id, entryType, {signal}),
         onSuccess: async (e) => {
-            if (e?.statusCode === 401) {
+            if (e?.statusCode === "401") {
                 navigate('/auth');
             }
             await queryClient.invalidateQueries({queryKey: [entryType]});

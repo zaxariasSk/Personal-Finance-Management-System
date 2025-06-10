@@ -58,7 +58,7 @@ const EntryPage = () => {
         }
 
         if (data?.hasError) {
-            if (data?.statusCode === 401) {
+            if (data?.statusCode === "401") {
                 navigate('/auth');
             } else {
                 dispatch(errorActions.setError({message: data.error}));

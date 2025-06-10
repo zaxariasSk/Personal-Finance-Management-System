@@ -27,7 +27,7 @@ const ExpensesElement = ({
                          signal
                      }) => deleteEntry(id, entryType, {signal}),
         onSuccess: async (e) => {
-            if (e?.statusCode === 401) {
+            if (e?.statusCode === "401") {
                 navigate('/auth');
             }
             await queryClient.invalidateQueries({queryKey: ["budgetExpenses", budgetId]});

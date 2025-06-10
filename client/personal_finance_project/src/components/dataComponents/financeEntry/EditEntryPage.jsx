@@ -32,7 +32,7 @@ const EditEntryPage = () => {
 
     useEffect(() => {
         if (data?.statusCode) {
-            if (data.statusCode === 401) {
+            if (data.statusCode === "401") {
                 navigate('/auth');
             } else {
                 dispatch(errorActions.setError({message: data.message}));

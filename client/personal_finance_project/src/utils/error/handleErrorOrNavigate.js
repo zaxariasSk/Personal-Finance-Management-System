@@ -9,7 +9,7 @@ const useHandleErrorOrNavigate = (error) => {
 
     useEffect(() => {
         if (error?.statusCode) {
-            if (error.statusCode === 401) {
+            if (error.statusCode === "401") {
                 navigate('/auth');
             } else {
                 dispatch(errorActions.setError({message: error.message}));
