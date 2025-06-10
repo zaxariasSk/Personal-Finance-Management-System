@@ -7,15 +7,10 @@ export const useAutoPageAdjustment = ({
                                           setPage,
                                           itemsKey,
                                       }) => {
-
-    console.log(data);
     useEffect(() => {
         if (!isFetching && data) {
             const items = data[itemsKey] || [];
             const { totalPages } = data;
-            console.log(totalPages)
-            console.log(currentPage)
-            console.log(items)
 
             // If current page is empty but other pages exist, go back
             if (items.length === 0 && totalPages > 0) {

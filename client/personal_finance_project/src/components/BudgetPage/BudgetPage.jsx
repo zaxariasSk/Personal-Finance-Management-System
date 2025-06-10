@@ -40,12 +40,12 @@ const BudgetPage = () => {
     const [selectedBudgetId, setSelectedBudgetId] = useState(null);
 
     const firstBudgetId = budgetList?.budgetDataList?.[0]?.id;
-    const budgetId = firstBudgetId ?? selectedBudgetId;
-
-    // console.log("firstBudgetId");
-    // console.log(firstBudgetId);
-    // console.log("budgetId");
-    // console.log(budgetId);
+    const budgetId = selectedBudgetId || firstBudgetId;
+    console.log(budgetList);
+    console.log("firstBudgetId");
+    console.log(firstBudgetId);
+    console.log("budgetId");
+    console.log(budgetId);
 
     useAutoPageAdjustment({
         data: budgetList,
@@ -95,7 +95,6 @@ const BudgetPage = () => {
     }
 
     useEffect(() => {
-        console.log(budgetList)
         if (budgetList?.hasError) {
             if (budgetList?.statusCode === "401") {
                 navigate('/auth');
