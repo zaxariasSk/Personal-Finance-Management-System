@@ -1,7 +1,7 @@
 import BudgetList from "../dataComponents/budget/BudgetList";
-import {Outlet, redirect, useLoaderData, useNavigate} from "react-router-dom";
+import {Outlet, redirect, useNavigate} from "react-router-dom";
 import {addNewBudget, fetchBudgetData, fetchBudgetListDataByPage} from "../../api/budgetApi";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import AddBudgetElement from "./AddBudgetElement";
 import Button from "../UI/Button";
 import {keepPreviousData, useQuery} from "@tanstack/react-query";
@@ -37,15 +37,15 @@ const BudgetPage = () => {
         placeholderData: keepPreviousData
     });
 
-    const [selectedBudgetId, setSelectedBudgetId] = useState(null);
+    const [selectedBudgetId, setSelectedBudgetId] = useState(() => budgetList?.budgetDataList?.[0]?.id);
 
-    const firstBudgetId = budgetList?.budgetDataList?.[0]?.id;
-    const budgetId = selectedBudgetId || firstBudgetId;
-    console.log(budgetList);
-    console.log("firstBudgetId");
-    console.log(firstBudgetId);
-    console.log("budgetId");
-    console.log(budgetId);
+    const budgetId = useMemo(() => {
+        const list = budgetList?.budgetDataList;
+        if (!list?.length) return undefined;
+
+        const isValid = list.some(b => b.id === selectedBudgetId);
+        return isValid ? selectedBudgetId : list[0].id;
+    }, [budgetList, selectedBudgetId]);
 
     useAutoPageAdjustment({
         data: budgetList,

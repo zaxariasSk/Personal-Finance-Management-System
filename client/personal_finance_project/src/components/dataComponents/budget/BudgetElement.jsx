@@ -25,7 +25,7 @@ const BudgetElement = ({
                 navigate('/auth');
             }
             await queryClient.removeQueries({queryKey: ["budgetExpenses", id], exact: false});
-            await queryClient.invalidateQueries({queryKey: ["budget"]})
+            await queryClient.invalidateQueries({queryKey: ["budget"]});
         },
         onError: error => dispatch(errorActions.setError({message: error.message}))
     })
