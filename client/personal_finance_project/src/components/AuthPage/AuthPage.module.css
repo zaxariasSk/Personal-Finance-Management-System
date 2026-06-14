@@ -1,0 +1,58 @@
+.auth {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: inherit;
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1.6rem;
+    padding: 4rem;
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+.container h1 {
+    font-size: var(--big-fs);
+    color: var(--gray-800);
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.container p {
+    font-size: var(--medium-fs);
+    color: var(--gray-600);
+    margin-bottom: 3rem;
+}
+
+.loginButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    background: #fff;
+    border: 1px solid var(--gray-300);
+    border-radius: 0.8rem;
+    padding: 1.2rem 2.4rem;
+    font-size: var(--medium-fs);
+    font-weight: 500;
+    color: var(--gray-700);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow);
+}
+
+.loginButton:hover {
+    background: var(--gray-50);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
+}
+
+.googleIcon {
+    width: 2rem;
+    height: 2rem;
+}

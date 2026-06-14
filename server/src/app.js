@@ -12,6 +12,7 @@ const incomeRoutes = require('./routes/incomeRoutes');
 const expensesRoutes = require('./routes/expensesRoutes');
 const budgetRoutes = require('./routes/budgetRoutes');
 const goalRoutes = require('./routes/goalRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
 
 app.use(cookieParser());
 app.use(express.json());
@@ -37,6 +38,7 @@ app.use('/income', incomeRoutes);
 app.use('/expenses', expensesRoutes);
 app.use('/budget', budgetRoutes);
 app.use("/goal", goalRoutes);
+app.use("/dashboard", dashboardRoutes);
 
 app.use(errorHandlerMiddleware);
 
@@ -45,7 +47,7 @@ app.listen(process.env.PORT || 3000, async () => {
         await sequelize.authenticate();
         // await sequelize.sync({force: true});
         // await sequelize.sync();
-        await sequelize.sync({alter: true}); // Use alter cautiously in production
+        await sequelize.sync(); // Use alter cautiously in production
 
     } catch (error) {
         console.error('Unable to connect to the database:', error);

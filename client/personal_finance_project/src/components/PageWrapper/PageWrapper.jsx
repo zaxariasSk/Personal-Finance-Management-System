@@ -1,6 +1,7 @@
 import {useSelector} from "react-redux";
 import ErrorComponent from "../../utils/error/ErrorComponent";
 import Menu from "./menu/Menu";
+import styles from "./PageWrapper.module.css";
 
 const PageWrapper = ({children}) => {
     const {
@@ -8,14 +9,13 @@ const PageWrapper = ({children}) => {
         message
     } = useSelector(state => state.error);
 
-
     return (
         <>
             {hasError && <ErrorComponent message={message} />}
-            <header>
+            <header className={styles.header}>
                 <Menu/>
             </header>
-            <main>
+            <main className={styles.main}>
                 {children}
             </main>
         </>
