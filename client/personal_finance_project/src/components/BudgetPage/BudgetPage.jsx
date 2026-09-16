@@ -106,18 +106,22 @@ const BudgetPage = () => {
 
     return (
         <>
-            <section>
-                <div>
-                    <h1>Budget</h1>
-                    <p>The budget section lets you choose how much money you want to spend per month in each category </p>
-                </div>
+            <section className={styles.page}>
+                <div className={styles.pageHeader}>
+                    <div>
+                        <p className={styles.eyebrow}>Plan your spending</p>
+                        <h1>Budgets</h1>
+                        <p className={styles.subtitle}>Set monthly limits and keep every category on track.</p>
+                    </div>
 
-                <Button
-                    className="plus_button"
-                    type="submit"
-                    onClick={addBudgetHandler}
-                >+
-                </Button>
+                    <Button
+                        className="plus_button"
+                        type="submit"
+                        onClick={addBudgetHandler}
+                        aria-label="Add budget"
+                    >+
+                    </Button>
+                </div>
 
                 {addBudget && <AddBudgetElement
                     isOpen={addBudget}
@@ -126,7 +130,11 @@ const BudgetPage = () => {
 
                 {/* Budget List */}
                 <div className={styles['budgetData-budgetList-container']}>
-                    <div>
+                    <div className={styles.listPanel}>
+                        <div className={styles.panelHeading}>
+                            <h2>Your budgets</h2>
+                            <span>{budgetList?.budgetDataList?.length || 0} this page</span>
+                        </div>
                         <div>
                             <BudgetList
                                 getBudgetId={budgetIdHandler}

@@ -1,4 +1,52 @@
 .budget__container {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.budgetCard {
+    min-height: 10rem;
+}
+
+.category h2 {
+    color: var(--gray-900);
+    font-size: 1.8rem;
+}
+
+.budgetMeta {
+    text-align: right;
+}
+
+.budgetMeta p {
+    margin: 0;
+    color: var(--gray-500);
+    font-size: var(--small-fs);
+}
+
+.budgetAmount p {
+    margin-top: 0.8rem;
+    color: var(--primary-color);
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    margin-top: 1.6rem;
+}
+
+.actions button,
+.actions a {
+    padding: 0.5rem;
+    background: transparent;
+    box-shadow: none;
+}
+
+.actions img {
+    width: 2rem;
+    height: 2rem;
 }
 

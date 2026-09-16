@@ -47,9 +47,9 @@ const FinanceElement = ({
     return (
         <tr className={styles.table_row}>
             <td>{source}</td>
-            <td>{amount}</td>
-            <td>{new Date(date).toLocaleDateString()}</td>
-            <td>{description || ""}</td>
+            <td className={styles.amount}>${Number(amount).toFixed(2)}</td>
+            <td className={styles.date}>{new Date(date).toLocaleDateString()}</td>
+            <td className={styles.description}>{description || "No description"}</td>
             <td>
                 <Link to={`edit/${id}`}>
                     <img

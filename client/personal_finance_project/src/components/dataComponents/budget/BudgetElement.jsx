@@ -1,7 +1,7 @@
 import CardComponent from "../../UI/CardComponent";
 import styles from "./BudgetElement.module.css";
 import Button from "../../UI/Button";
-import {Link, Outlet, useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useMutation} from "@tanstack/react-query";
 import {queryClient} from "../../../utils/queryClient";
 import {errorActions} from "../../../redux/slices/errorSlice";
@@ -39,23 +39,23 @@ const BudgetElement = ({
 
     return (
         <CardComponent>
-            <div>
+            <div className={styles.budgetCard}>
                 <div className={styles.budget__container}>
                     <div className="budget-element">
-                        <div className="budget-element__category">
+                        <div className={styles.category}>
                             <h2>{category}</h2>
                         </div>
 
                     </div>
-                    <div className="budget-element__date">
+                    <div className={styles.budgetMeta}>
                         <p>{month}/{year}</p>
-                        <div className="budget-element__amount">
-                            <p>${amount.toFixed(2)}</p>
+                        <div className={styles.budgetAmount}>
+                            <p>${Number(amount).toFixed(2)}</p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div className={"edit-delete-container"}>
+            <div className={styles.actions}>
                 <div onClick={(e) => e.stopPropagation()}>
                     <Link to={`edit/${id}`}>
                         <img

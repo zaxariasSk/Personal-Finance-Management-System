@@ -1,5 +1,6 @@
 import {useCallback} from "react";
 import GoalElement from "../dataComponents/goals/GoalElement";
+import styles from "./GoalsPage.module.css";
 
 const GoalList = ({goalsData, updateGoalId}) => {
     
@@ -8,11 +9,11 @@ const GoalList = ({goalsData, updateGoalId}) => {
     }, [updateGoalId]);
 
     if (!goalsData || goalsData.length === 0) {
-        return <p>No Goals found</p>;
+        return <p className={styles.emptyState}>No goals found yet.</p>;
     }
 
     return (
-        <ul>
+        <ul className={styles.goalList}>
             {goalsData.map((el) => {
                 return (
                     <li

@@ -1,24 +1,65 @@
-.table_row {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-}
-
-table {
+.financeTable {
     border-collapse: collapse;
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 0;
+    min-width: 680px;
 }
 
-th {
-    background-color: #f2f2f2;
+.financeTable th {
+    background-color: var(--gray-100);
     text-align: left;
-    font-size: var(--medium-fs);
+    color: var(--gray-600);
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
 }
 
-td, th {
-    padding: 1.5rem 8px;
+.financeTable td,
+.financeTable th {
+    padding: 1.4rem 1.6rem;
 }
 
-td {
+.table_row {
+    border-bottom: 1px solid var(--gray-200);
+    transition: background-color 0.2s ease;
+}
+
+.table_row:hover {
+    background-color: #f8fafc;
+}
+
+.financeTable td {
     font-size: var(--small-fs);
-    width: 25%;
+    color: var(--gray-700);
+}
+
+.amount {
+    color: var(--gray-900) !important;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.date {
+    color: var(--gray-500) !important;
+    white-space: nowrap;
+}
+
+.description {
+    max-width: 22rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.financeTable a,
+.financeTable button {
+    padding: 0.5rem;
+    background: transparent;
+    box-shadow: none;
+}
+
+.financeTable img {
+    width: 2rem;
+    height: 2rem;
 }

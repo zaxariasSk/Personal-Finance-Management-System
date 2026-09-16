@@ -11,6 +11,7 @@ import {errorActions} from "../../redux/slices/errorSlice";
 import {useDispatch} from "react-redux";
 import GoalContributionList from "../dataComponents/goals/GoalContributionList";
 import {useAutoPageAdjustment} from "../../utils/hooks/useAutoPageAdjustment";
+import styles from "./GoalsPage.module.css";
 
 const GoalsPage = () => {
     const [addGoal, setAddGoal] = useState(false);
@@ -92,20 +93,28 @@ const GoalsPage = () => {
 
     return (
         <>
-            <section>
-                <div>
-                    <h1>Goals</h1>
-                    <p>The Goals section lets you set and track a financial goal </p>
+            <section className={styles.page}>
+                <div className={styles.pageHeader}>
+                    <div>
+                        <p className={styles.eyebrow}>Build your future</p>
+                        <h1>Goals</h1>
+                        <p className={styles.subtitle}>Turn big plans into steady, visible progress.</p>
+                    </div>
+
+                    <Button
+                        className="plus_button"
+                        type="submit"
+                        onClick={addNewGoalHandler}
+                        aria-label="Add goal">
+                        +
+                    </Button>
                 </div>
 
-                <Button
-                    className="plus_button"
-                    type="submit"
-                    onClick={addNewGoalHandler}>
-                    +
-                </Button>
-
                 <div>
+                    <div className={styles.sectionLabel}>
+                        <h2>Your goals</h2>
+                        <span>{goalsData?.goals?.length || 0} active plans</span>
+                    </div>
                     <GoalList
                         goalsData={goalsData.goals}
                         updateGoalId={updateGoalId} />
@@ -124,15 +133,20 @@ const GoalsPage = () => {
                     isOpen={addGoal}
                     closeFn={closeAddGoal} />}
 
-                {goalContributionsList && <GoalContributionList
-                    goalContributionsList={goalContributionsList}
-                    currentPage={goalContributionsList.currentPage}
-                    setPage={setContributionPage}
-                    isFetching={isContributionsFetching}
-                    goToNextContributionPage={goToNextContributionPage}
-                    goToPreviousContributionPage={goToPreviousContributionPage}
-                    totalPages={goalContributionsList.totalPages}
-                />}
+                {goalContributionsList && <div className={styles.contributions}>
+                    <div className={styles.sectionLabel}>
+                        <h2>Recent contributions</h2>
+                    </div>
+                    <GoalContributionList
+                        goalContributionsList={goalContributionsList}
+                        currentPage={goalContributionsList.currentPage}
+                        setPage={setContributionPage}
+                        isFetching={isContributionsFetching}
+                        goToNextContributionPage={goToNextContributionPage}
+                        goToPreviousContributionPage={goToPreviousContributionPage}
+                        totalPages={goalContributionsList.totalPages}
+                    />
+                </div>}
             </section>
 
             <Outlet />

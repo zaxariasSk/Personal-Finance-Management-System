@@ -1,5 +1,6 @@
 import BudgetElement from "./BudgetElement";
 import {useCallback, memo} from "react";
+import styles from "../../BudgetPage/BudgetPage.module.css";
 
 const BudgetList = memo(({
                         budgetDataList,
@@ -11,11 +12,11 @@ const BudgetList = memo(({
     }, [getBudgetId]);
 
     if (!budgetDataList || budgetDataList.length === 0) {
-        return <p>No Budget found</p>;
+        return <p className={styles.emptyState}>No budgets found yet.</p>;
     }
 
     return (
-        <ul>
+        <ul className={styles.budgetList}>
             {budgetDataList.map((el) => {
                 return (
                     <li

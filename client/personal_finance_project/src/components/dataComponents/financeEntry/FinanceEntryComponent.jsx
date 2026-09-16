@@ -1,4 +1,5 @@
 import FinanceElement from "./FinanceElement";
+import styles from "./FinanceElement.module.css";
 
 const FinanceEntryComponent = ({data, entryType}) => {
 
@@ -7,7 +8,7 @@ const FinanceEntryComponent = ({data, entryType}) => {
     }
 
     return (
-        <table>
+        <table className={styles.financeTable}>
             <thead>
             <tr>
                 <th scope="col">Source</th>

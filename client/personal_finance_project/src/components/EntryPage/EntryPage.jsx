@@ -11,6 +11,7 @@ import {Outlet, redirect, useLoaderData, useNavigate, useParams} from "react-rou
 import FinanceEntryComponent from "../dataComponents/financeEntry/FinanceEntryComponent";
 import PaginationComponent from "../UI/PaginationComponent";
 import {useAutoPageAdjustment} from "../../utils/hooks/useAutoPageAdjustment";
+import styles from "./EntryPage.module.css";
 
 const EntryPage = () => {
     const {type: entryType} = useParams();
@@ -74,34 +75,45 @@ const EntryPage = () => {
                 modal={addEntryPage}
                 closeModal={handleClose}
             />}
-            <h1>{entryType}</h1>
-
-            <Button
-                className="plus_button"
-                type="submit"
-                onClick={addEntryHandler}
-            >
-                +
-            </Button>
-
-            <CardComponent>
-                <h2>
-                    {entryType} history
-                </h2>
-                <div>
-                    <FinanceEntryComponent data={data?.data} entryType={entryType} />
+            <section className={styles.page}>
+                <div className={styles.pageHeader}>
+                    <div>
+                        <p className={styles.eyebrow}>{entryType === "income" ? "Money in" : "Money out"}</p>
+                        <h1>{entryType}</h1>
+                        <p className={styles.subtitle}>Review and manage your {entryType} transactions.</p>
+                    </div>
+                    <Button
+                        className="plus_button"
+                        type="submit"
+                        onClick={addEntryHandler}
+                        aria-label={`Add ${entryType}`}
+                    >
+                        +
+                    </Button>
                 </div>
-            </CardComponent>
+
+                <CardComponent>
+                    <div className={styles.cardHeader}>
+                        <div>
+                            <h2>{entryType} history</h2>
+                            <p>{data?.totalItems || data?.count || 0} recorded transactions</p>
+                        </div>
+                    </div>
+                    <div className={styles.tableWrapper}>
+                        <FinanceEntryComponent data={data?.data} entryType={entryType} />
+                    </div>
+                </CardComponent>
+
+                {data?.totalPages > 1 && <PaginationComponent
+                    data={data}
+                    currentPage={currentPage}
+                    goToNextPage={goToNextPage}
+                    goToPreviousPage={goToPreviousPage} />}
+            </section>
 
             {/* Outlet for nested routes */}
             <Outlet />
 
-            {/* Component for pagination */}
-            {data?.totalPages > 1 && <PaginationComponent
-                data={data}
-                currentPage={currentPage}
-                goToNextPage={goToNextPage}
-                goToPreviousPage={goToPreviousPage} />}
         </>
     )
 }

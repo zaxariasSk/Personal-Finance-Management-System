@@ -6,6 +6,7 @@ import {deleteGoal} from "../../../api/goalsApi";
 import {queryClient} from "../../../utils/queryClient";
 import {useDispatch} from "react-redux";
 import {errorActions} from "../../../redux/slices/errorSlice";
+import styles from "./GoalElement.module.css";
 
 const GoalElement = ({
                          id,
@@ -37,17 +38,22 @@ const GoalElement = ({
 
     return (
         <CardComponent>
-            <div>
-                <div>
-                    <div>
-                        <h2>{category}</h2>
+            <div className={styles.goalCard}>
+                <div className={styles.goalHeader}>
+                    <h2>{category}</h2>
+                    <Link className={styles.contribute} to={`contribution/${id}`} aria-label={`Add contribution to ${category}`}>+</Link>
+                </div>
+                <div className={styles.goalAmounts}>
+                    <p><strong>${Number(savedAmount).toFixed(2)}</strong> saved of ${Number(targetAmount).toFixed(2)}</p>
+                    <div className={styles.progressTrack}>
+                        <div
+                            className={styles.progressBar}
+                            style={{width: `${Math.min((savedAmount / targetAmount) * 100, 100)}%`}}
+                        />
                     </div>
                 </div>
-                <div>
-                    <p>{+savedAmount.toFixed(2)}/{+targetAmount.toFixed(2)}</p>
-                </div>
             </div>
-            <div className={"edit-delete-container"}>
+            <div className={styles.actions}>
                 <div onClick={(e) => e.stopPropagation()}>
                     <Link to={`edit/${id}`}>
                         <img
@@ -67,11 +73,6 @@ const GoalElement = ({
                         title="delete"
                     />
                 </Button>
-            </div>
-            <div>
-                <Link to={`contribution/${id}`}>
-                    +
-                </Link>
             </div>
         </CardComponent>
     )

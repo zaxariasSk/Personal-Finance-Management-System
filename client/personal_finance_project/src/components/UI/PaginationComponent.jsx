@@ -1,3 +1,5 @@
+import styles from "./PaginationComponent.module.css";
+
 const PaginationComponent = ({
                                  data,
                                  currentPage,
@@ -10,15 +12,17 @@ const PaginationComponent = ({
     }
 
     return (
-        <div>
+        <div className={styles.pagination}>
             <button
+            className={styles.button}
                 onClick={goToPreviousPage}
                 disabled={currentPage === 1}
             >
                 Previous
             </button>
-            <span>{currentPage} of {data?.totalPages}</span>
+            <span className={styles.pageStatus}>{currentPage} <span>of</span> {data?.totalPages}</span>
             <button
+                className={styles.button}
                 onClick={goToNextPage}
                 disabled={currentPage === data?.totalPages}
             >
