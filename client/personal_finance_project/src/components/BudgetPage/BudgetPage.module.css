@@ -63,12 +63,27 @@
 }
 
 @media (max-width: 860px) {
+    .pageHeader {
+        align-items: flex-start;
+    }
+
     .budgetData-budgetList-container {
         flex-direction: column;
     }
 
     .budgetData-budgetList-container > * {
         width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
+    .pageHeader {
+        margin-bottom: 1.8rem;
+    }
+
+    .panelHeading {
+        align-items: flex-start;
+        gap: 1rem;
     }
 }
 

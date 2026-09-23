@@ -67,3 +67,19 @@
 .contributions {
     margin-top: 2.4rem;
 }
+
+@media (max-width: 640px) {
+    .pageHeader {
+        align-items: flex-start;
+        margin-bottom: 1.8rem;
+    }
+
+    .sectionLabel {
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .goalList {
+        grid-template-columns: 1fr;
+    }
+}

@@ -62,7 +62,7 @@ const ExpensesElement = ({
                 </Link>
             </td>
             <td>
-                <Button onClick={deleteEntryHandler}>
+                <Button className="icon_button" onClick={deleteEntryHandler} aria-label="Delete expense">
                     <img
                         src={'/images/delete.svg'}
                         alt="delete"

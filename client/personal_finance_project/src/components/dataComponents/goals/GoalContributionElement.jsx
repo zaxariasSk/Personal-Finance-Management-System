@@ -23,6 +23,7 @@ const GoalContributionElement = ({
                 navigate('/auth');
             }
             await queryClient.invalidateQueries({queryKey: ["goalsContributions", goalId]});
+            await queryClient.invalidateQueries({queryKey: ["goals"]});
         },
         onError: error => {
             dispatch(errorActions.setError({message: error.message}));
@@ -49,7 +50,7 @@ const GoalContributionElement = ({
                 </Link>
             </td>
             <td>
-                <Button onClick={deleteEntryHandler}>
+                <Button className="icon_button" onClick={deleteEntryHandler} aria-label="Delete contribution">
                     <img
                         src={'/images/delete.svg'}
                         alt="delete"

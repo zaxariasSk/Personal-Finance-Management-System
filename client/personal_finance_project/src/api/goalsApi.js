@@ -1,4 +1,6 @@
 const responseErrorHandler = async (res) => {
+    console.log(res);
+    
     if (!res.ok) {
         if (res.status === 401) {
             return {
@@ -35,7 +37,6 @@ export const getAllGoals = async (page, {signal}) => {
         });
 
         const error = await responseErrorHandler(res);
-
         if (error?.hasError) {
             return error;
         }

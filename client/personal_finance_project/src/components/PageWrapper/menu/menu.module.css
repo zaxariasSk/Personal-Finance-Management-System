@@ -77,3 +77,44 @@
     border-radius: 50%;
 }
 
+@media (max-width: 640px) {
+    .navigation-container {
+        top: auto;
+        right: 1rem;
+        bottom: 1rem;
+        left: 1rem;
+        width: auto;
+        height: 5.8rem;
+        border: 1px solid var(--gray-200);
+        border-radius: 1.6rem;
+        box-shadow: 0 1rem 2.5rem rgba(15, 23, 42, 0.2);
+    }
+
+    .navigation-container ul {
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 0 0.6rem;
+        gap: 0.2rem;
+    }
+
+    .navigation-container ul li,
+    .navigation-container ul li:last-of-type {
+        width: auto;
+        margin-top: 0;
+    }
+
+    .navigation-container ul li a {
+        width: 4.4rem;
+        height: 4.4rem;
+    }
+
+    .navigation-container ul li a img {
+        width: 2.4rem;
+        height: 2.4rem;
+    }
+
+    .profile {
+        margin: 0;
+    }
+}
+

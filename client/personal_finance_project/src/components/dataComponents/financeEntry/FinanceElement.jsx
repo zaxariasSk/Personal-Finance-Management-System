@@ -62,7 +62,7 @@ const FinanceElement = ({
                 </Link>
             </td>
             <td>
-                <Button onClick={deleteEntryHandler}>
+                <Button className="icon_button" onClick={deleteEntryHandler} aria-label={`Delete ${entryType}`}>
                     <img
                         src={'/images/delete.svg'}
                         alt="delete"

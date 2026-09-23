@@ -2,6 +2,7 @@ import CardComponent from "../../UI/CardComponent";
 import ExpensesElement from "./ExpensesElement";
 import PaginationComponent from "../../UI/PaginationComponent";
 import {useAutoPageAdjustment} from "../../../utils/hooks/useAutoPageAdjustment";
+import tableStyles from "../financeEntry/FinanceElement.module.css";
 
 const ExpensesList = ({
                           expensesList,
@@ -35,7 +36,7 @@ const ExpensesList = ({
         <CardComponent>
             {list?.length <= 0 && <div>No expenses found</div>}
             {!expensesList.hasError &&
-                <table>
+                <table className={tableStyles.financeTable}>
                     <tbody>{list.map(el => {
                         return <ExpensesElement
                             key={el.id}

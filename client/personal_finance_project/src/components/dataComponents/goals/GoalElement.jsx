@@ -64,7 +64,7 @@ const GoalElement = ({
                             title="Edit" />
                     </Link>
                 </div>
-                <Button onClick={deleteBudgetHandler}>
+                <Button className="icon_button" onClick={deleteBudgetHandler} aria-label={`Delete ${category} goal`}>
                     <img
                         src={'/images/delete.svg'}
                         alt="delete"

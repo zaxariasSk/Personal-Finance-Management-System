@@ -2,6 +2,7 @@ import CardComponent from "../../UI/CardComponent";
 import PaginationComponent from "../../UI/PaginationComponent";
 import GoalContributionElement from "./GoalContributionElement";
 import {useAutoPageAdjustment} from "../../../utils/hooks/useAutoPageAdjustment";
+import tableStyles from "../financeEntry/FinanceElement.module.css";
 
 const GoalContributionList = ({
                                   goalContributionsList,
@@ -13,7 +14,7 @@ const GoalContributionList = ({
                                   isFetching
                               }) => {
     const list = goalContributionsList.contributions;
-    console.log(totalPages);
+    console.log(goalContributionsList);
     // an exw parapanw elements kai diagrapsw ena me paei sthn prohgoymenh selida alla meta moy exei akoma 2
     useAutoPageAdjustment({
         data: goalContributionsList,
@@ -35,7 +36,15 @@ const GoalContributionList = ({
         <CardComponent>
             {list.hasError && <div>{list.message}</div>}
             {!list.hasError &&
-                <table>
+                <table className={tableStyles.financeTable}>
+                    <thead>
+                        <tr>
+                            <th scope="col">Amount</th>
+                        </tr>
+                        <tr>
+                            <th scope="col">Date</th>
+                        </tr>
+                    </thead>
                     <tbody>{list.map(el => {
                         return <GoalContributionElement
                             key={el.id}
@@ -49,14 +58,14 @@ const GoalContributionList = ({
                 </table>
             }
 
-            <div>
-                {totalPages > 1 && <PaginationComponent
+            {totalPages > 1 &&<div>
+                 <PaginationComponent
                     data={goalContributionsList}
                     currentPage={currentPage}
                     goToNextPage={goToNextContributionPage}
                     goToPreviousPage={goToPreviousContributionPage}
-                />}
-            </div>
+                />
+            </div>}
         </CardComponent>
     );
 }

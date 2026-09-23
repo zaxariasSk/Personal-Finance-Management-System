@@ -63,6 +63,9 @@ export async function action({
     await queryClient.invalidateQueries({
         queryKey: ["goalsContributions", goalId]
     });
+    await queryClient.invalidateQueries({
+        queryKey: ["goals"]
+    });
 
     if (res.statusCode === 401) {
         return redirect('/auth');

@@ -39,6 +39,7 @@ const DashboardElement = () => {
     }
 
     if (error || dashboardData?.hasError) {
+        console.log(error);
         return (
             <div className={styles.dashboard}>
                 <div className={styles.welcome}>

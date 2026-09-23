@@ -79,3 +79,19 @@ p {
   margin: 0 auto;
   padding: 0 2rem;
 }
+
+@media (max-width: 640px) {
+  html {
+    font-size: 56.25%;
+  }
+
+  #error-container {
+    right: 1.2rem;
+    bottom: 7rem;
+    left: 1.2rem;
+  }
+
+  .container {
+    padding: 0 1.2rem;
+  }
+}

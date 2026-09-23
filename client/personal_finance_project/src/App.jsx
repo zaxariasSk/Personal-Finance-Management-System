@@ -112,8 +112,12 @@ const router = createBrowserRouter([
         element: <Navigate
             to="/dashboard"
             replace={true} />
+    },
+    {
+        ErrorBoundary: <Navigate
+        to="/dashboard"
+        replace={true} />
     }
-
 ]);
 
 

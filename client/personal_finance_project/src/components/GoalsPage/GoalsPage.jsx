@@ -38,7 +38,7 @@ const GoalsPage = () => {
         itemsKey: "goals",
     });
 
-    const [selectedGoalId, setSelectedGoalId] = useState(goalsData.goals[0]?.id);
+    const [selectedGoalId, setSelectedGoalId] = useState(goalsData?.goals[0]?.id);
 
     const {
         data: goalContributionsList,

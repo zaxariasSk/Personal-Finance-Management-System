@@ -11,3 +11,14 @@
     transform: translateY(-2px);
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
+
+@media (max-width: 640px) {
+    .card_container {
+        padding: 1.6rem;
+        border-radius: 1rem;
+    }
+
+    .card_container:hover {
+        transform: none;
+    }
+}

@@ -57,9 +57,18 @@
 @media (max-width: 640px) {
     .pageHeader {
         align-items: flex-start;
+        margin-bottom: 1.8rem;
     }
 
     .pageHeader h1 {
         font-size: 3rem;
+    }
+
+    .pageHeader .plus_button {
+        flex: 0 0 auto;
+    }
+
+    .cardHeader {
+        align-items: flex-start;
     }
 }

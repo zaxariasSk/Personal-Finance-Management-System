@@ -54,3 +54,21 @@ form .errorMessage {
     border-radius: 0.8rem;
     padding: 1.2rem 1.6rem;
 }
+
+.form > button {
+    width: 100%;
+    margin-top: 0.4rem;
+}
+
+@media (max-width: 640px) {
+    .form > div {
+        margin-bottom: 1.5rem;
+    }
+
+    .form input,
+    .form select,
+    .submit_select {
+        min-height: 4.4rem;
+        padding: 1rem 1.2rem;
+    }
+}

@@ -19,7 +19,6 @@ export const useAutoPageAdjustment = ({
             // If current page exceeds total pages (due to deletions), go to last page
             else if (currentPage > totalPages && totalPages > 0) {
                 setPage(totalPages);
-                console.log('ee')
             }
         }
     }, [data, isFetching, currentPage, setPage, itemsKey]);

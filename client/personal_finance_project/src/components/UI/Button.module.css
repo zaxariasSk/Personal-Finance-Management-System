@@ -1,24 +1,79 @@
 .button_wrapper {
+    min-height: 4rem;
+    border: 1px solid transparent;
     border-radius: 0.8rem;
     cursor: pointer;
     font-size: var(--small-fs);
     font-weight: 500;
     padding: 0.8rem 1.6rem;
-    border: none;
+    color: #fff;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+    box-shadow: 0 0.4rem 1rem rgba(37, 99, 235, 0.2);
 }
 
 .button_wrapper:hover {
     transform: translateY(-1px);
-    box-shadow: var(--shadow);
+    box-shadow: 0 0.7rem 1.5rem rgba(37, 99, 235, 0.28);
 }
 
 .button_wrapper:active {
     transform: translateY(0);
+}
+
+.button_wrapper:focus-visible {
+    outline: 3px solid rgba(147, 197, 253, 0.8);
+    outline-offset: 2px;
+}
+
+.button_wrapper:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+    transform: none;
+    box-shadow: none;
+}
+
+.secondary_button {
+    color: var(--gray-700);
+    border-color: var(--gray-300);
+    background: #fff;
+    box-shadow: var(--shadow);
+}
+
+.secondary_button:hover {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow);
+}
+
+.danger_button {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    box-shadow: 0 0.4rem 1rem rgba(239, 68, 68, 0.2);
+}
+
+.icon_button {
+    min-height: 3.2rem;
+    width: 3.2rem;
+    padding: 0.6rem;
+    color: var(--gray-600);
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+}
+
+.icon_button:hover {
+    color: var(--red-color);
+    background: #fef2f2;
+    box-shadow: none;
+}
+
+.icon_button img {
+    width: 2rem;
+    height: 2rem;
 }
 
 .plus_button {

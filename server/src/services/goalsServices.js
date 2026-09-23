@@ -142,15 +142,20 @@ const updateGoal = async (id, updatedData, userId) => {
 }
 
 const addNewContribution = async (goalId, data, userId) => {
+    const transaction = await GoalContribution.sequelize.transaction();
+
     try {
         const goalExists = await Goal.findOne({
             where: {
                 userId,
                 id: goalId
-            }
+            },
+            transaction,
+            lock: transaction.LOCK.UPDATE
         });
         
         if (!goalExists) {
+            await transaction.rollback();
             return {
                 hasError: true,
                 message: "Failed to add this contribution"
@@ -159,19 +164,28 @@ const addNewContribution = async (goalId, data, userId) => {
 
         const contribution = await GoalContribution.create({
             ...data,
+            amount: Number(data.amount),
             userId,
             goalId,
-        });
+        }, {transaction});
 
         if (!contribution) {
+            await transaction.rollback();
             return {
                 hasError: true,
                 message: "Failed to add this contribution"
             }
         }
 
+        await goalExists.increment(
+            {savedAmount: Number(data.amount)},
+            {transaction}
+        );
+
+        await transaction.commit();
         return contribution;
     } catch (e) {
+        await transaction.rollback();
         console.log(e);
         throw new InternalServerError("Something went wrong with the server. We are working on it to resolve your problem.")
     }
@@ -210,21 +224,40 @@ const getGoalsContributionList = async (goalId, userId, limit, page) => {
 }
 
 const removeContributionById = async (id, userId) => {
+    const transaction = await GoalContribution.sequelize.transaction();
+
     try {
-        const res = await GoalContribution.destroy({
+        const contribution = await GoalContribution.findOne({
             where: {
                 id,
                 userId
-            }
+            },
+            transaction,
+            lock: transaction.LOCK.UPDATE
         });
 
-        if (!res) {
+        if (!contribution) {
+            await transaction.rollback();
             return {
                 hasError: true,
-                message: "Failed to delete Goal"
+                message: "Failed to delete Goal contribution"
             }
         }
+
+        const res = await GoalContribution.destroy({
+            where: {id, userId},
+            transaction
+        });
+
+        await Goal.increment(
+            {savedAmount: -Number(contribution.amount)},
+            {where: {id: contribution.goalId, userId}, transaction}
+        );
+
+        await transaction.commit();
+        return res;
     } catch (e) {
+        await transaction.rollback();
         throw new InternalServerError("Something went wrong with the server. We are working on it to resolve your problem.");
     }
 }
@@ -253,26 +286,39 @@ const getGoalContributionByPk = async (id, userId) => {
 }
 
 const updateContribution = async (id, newData, userId) => {
-    try {
-        const [updatedContribution] = await GoalContribution.update(
-            newData,
-            {
-                where: {
-                    id,
-                    userId
-                }
-            }
-        );
+    const transaction = await GoalContribution.sequelize.transaction();
 
-        if (updatedContribution <= 0) {
+    try {
+        const contribution = await GoalContribution.findOne({
+            where: {id, userId},
+            transaction,
+            lock: transaction.LOCK.UPDATE
+        });
+
+        if (!contribution) {
+            await transaction.rollback();
             return {
                 hasError: true,
                 message: "Failed to update this Contribution entry"
             }
         }
 
+        const oldAmount = Number(contribution.amount);
+        const newAmount = Number(newData.amount);
+        const [updatedContribution] = await GoalContribution.update(
+            {...newData, amount: newAmount},
+            {where: {id, userId}, transaction}
+        );
+
+        await Goal.increment(
+            {savedAmount: newAmount - oldAmount},
+            {where: {id: contribution.goalId, userId}, transaction}
+        );
+
+        await transaction.commit();
         return updatedContribution;
     } catch (e) {
+        await transaction.rollback();
         throw new InternalServerError("Something went wrong with the server. We are working on it to resolve your problem.");
     }
 }

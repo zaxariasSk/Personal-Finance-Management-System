@@ -83,6 +83,8 @@ export async function action({params, request}) {
 
     const res = await editContribution(contributionId, contributionData);
     await queryClient.invalidateQueries({queryKey: ["contribution", contributionId]});
+    await queryClient.invalidateQueries({queryKey: ["goals"]});
+    await queryClient.invalidateQueries({queryKey: ["goalsContributions"]});
 
 
     if (res.statusCode === 401) {

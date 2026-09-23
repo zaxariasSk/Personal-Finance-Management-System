@@ -66,7 +66,7 @@ const BudgetElement = ({
                             title="Edit" />
                     </Link>
                 </div>
-                <Button onClick={deleteBudgetHandler}>
+                <Button className="icon_button" onClick={deleteBudgetHandler} aria-label={`Delete ${category} budget`}>
                     <img
                         src={'/images/delete.svg'}
                         alt="delete"
