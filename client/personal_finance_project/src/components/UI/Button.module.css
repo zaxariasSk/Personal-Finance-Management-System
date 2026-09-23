@@ -16,18 +16,9 @@
     box-shadow: 0 0.4rem 1rem rgba(37, 99, 235, 0.2);
 }
 
-.button_wrapper:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 0.7rem 1.5rem rgba(37, 99, 235, 0.28);
-}
-
-.button_wrapper:active {
-    transform: translateY(0);
-}
 
 .button_wrapper:focus-visible {
     outline: 3px solid rgba(147, 197, 253, 0.8);
-    outline-offset: 2px;
 }
 
 .button_wrapper:disabled {

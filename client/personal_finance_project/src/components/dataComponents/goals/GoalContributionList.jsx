@@ -40,8 +40,6 @@ const GoalContributionList = ({
                     <thead>
                         <tr>
                             <th scope="col">Amount</th>
-                        </tr>
-                        <tr>
                             <th scope="col">Date</th>
                         </tr>
                     </thead>
